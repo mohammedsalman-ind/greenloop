@@ -9,8 +9,9 @@
   "scripts": {
     "dev": "node --env-file-if-exists=../.env --watch src/server.mjs",
     "start": "node --env-file-if-exists=../.env src/server.mjs",
-    "test": "node --test tests/backend.test.mjs tests/audit.test.mjs tests/crud.test.mjs",
+    "test": "node --test tests/backend.test.mjs tests/audit.test.mjs tests/crud.test.mjs tests/qa-regressions.test.mjs",
     "check": "tsc -p tsconfig.json",
+    "admin:bootstrap": "node scripts/bootstrap-admin.mjs",
     "db:migrate": "node --env-file-if-exists=../.env scripts/migrate-postgres.mjs",
     "db:import": "node --env-file-if-exists=../.env scripts/migrate-sqlite.mjs",
     "test:postgres": "node scripts/test-postgres.mjs"
