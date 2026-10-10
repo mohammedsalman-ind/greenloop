@@ -7,8 +7,11 @@
   "engines": { "node": ">=24.0.0" },
   "scripts": {
     "dev": "node --env-file-if-exists=.env scripts/dev.mjs",
+    "predev:frontend": "node scripts/import-public-site.mjs",
     "dev:frontend": "npm run dev --workspace @greenloop/frontend",
     "dev:backend": "npm run dev --workspace @greenloop/backend",
+    "import:public-site": "node scripts/import-public-site.mjs",
+    "prebuild": "npm run import:public-site",
     "build": "npm run build --workspace @greenloop/frontend",
     "lint": "npm run lint --workspace @greenloop/frontend",
     "check:backend": "npm run check --workspace @greenloop/backend",

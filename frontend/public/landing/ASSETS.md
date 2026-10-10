@@ -34,10 +34,10 @@ Earlier video assets used the same interface-removal approach at approximately 0
 
 ## Code-native visuals and third-party assets
 
-- Steel model: beveled I-section, chain links, lighting and deterministic worn-steel canvas texture authored in `src/scene-engine.js`. No external 3D model download.
+- Steel model: beveled I-section, chain links, lighting and deterministic worn-steel canvas texture authored in `src/scene-engine.js`. Glass frames and panes, textured concrete slabs, and the HVAC housing, grille and fan are authored in `src/material-models.js`. No external 3D model downloads.
 - Icons, scan lattice, score ring, diagrams and routes: original inline SVG/CSS.
 - Passport QR: generated from the string `GREENLOOP SAMPLE | GL/001 | Structural Steel | S355 | 6.2 m | 2.4 t`; it encodes a sample record, not an external URL.
-- India outline: derived from `world-atlas@2.0.2`, `countries-50m.json`, based on Natural Earth. Projection and city overlays generated for this site. World Atlas license included at `dist/assets/world-atlas-LICENSE.txt`. Source: https://github.com/topojson/world-atlas
+- India outline: derived from `world-atlas@2.0.2`, `countries-50m.json`, based on Natural Earth. Projection and city overlays generated for this site. The screenshot revision reduces the network to eight non-crossing connections and adds separate dark city-label backgrounds. World Atlas license included at `dist/assets/world-atlas-LICENSE.txt`. Source: https://github.com/topojson/world-atlas
 - Inter variable font: Latin normal WOFF2 from `@fontsource-variable/inter@5.3.0`. SIL Open Font License included at `dist/assets/Inter-OFL.txt`. Source: https://github.com/rsms/inter
 - Three.js: pinned in package.json; its bundled MIT notice is preserved in the application bundle. Source: https://github.com/mrdoob/three.js
 

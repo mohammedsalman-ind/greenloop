@@ -22,6 +22,8 @@ try {
     assert.match(response.headers.get('content-type'), /text\/html/);
     const html = await response.text();
     assert.equal([...html.matchAll(/<section[^>]+data-index="(\d+)"/g)].length, 13, label);
+    assert.match(html, /class="hero-wordmark">GREEN<span>LOOP<\/span>/, `${label}: greenloop-story hero`);
+    assert.ok(!html.includes('id="market-search"'), `${label}: greenloop-story marketplace`);
     assert.match(html, /class="india-outline"/);
     assert.match(html, /href="\/app" class="platform-button/);
     assert.match(html, /platformUrl: "\/app"/);
