@@ -2,8 +2,8 @@ import { requireThat } from '../validation.mjs';
 
 const now = () => new Date().toISOString();
 
-export function createPaymentService({ paymentModel, provider, datasetModel }) {
-  const deliver = (event, signature) => processWebhook(Buffer.from(JSON.stringify(event)), signature);
+export function createPaymentService({ paymentModel, provider, datasetModel, runWebhook = operation => operation() }) {
+  const deliver = (event, signature) => runWebhook(() => processWebhook(Buffer.from(JSON.stringify(event)), signature));
 
   const processWebhook = (rawBody, signature) => {
     requireThat(provider.verifyWebhook(rawBody, signature), 'Invalid payment provider signature.', 401);
@@ -19,6 +19,8 @@ export function createPaymentService({ paymentModel, provider, datasetModel }) {
       if (event.type === 'payment.captured' || event.type === 'payment.failed') {
         if (event.amountMinor !== attempt.amountMinor || attempt.paymentStatus !== 'pending') return { ignored: true };
         paymentModel.update(attempt.attemptId, { payment_status: event.type === 'payment.captured' ? 'paid' : 'failed', updated_at: updateAt, ...(event.type === 'payment.captured' ? { paid_at: event.occurredAt ?? updateAt } : {}) });
+        // Delivery may be verified before payment when dispatch happens first.
+        if (event.type === 'payment.captured') service.afterVerification(datasetModel.load(), attempt.bookingId);
       } else if (event.type === 'refund.processed' || event.type === 'refund.failed') {
         if (event.amountMinor !== attempt.refundAmountMinor || attempt.refundStatus !== 'pending') return { ignored: true };
         paymentModel.update(attempt.attemptId, { refund_status: event.type === 'refund.processed' ? 'refunded' : 'failed', updated_at: updateAt });
@@ -33,9 +35,9 @@ export function createPaymentService({ paymentModel, provider, datasetModel }) {
   const scheduleRefund = attempt => provider.createRefund({ providerReference: attempt.providerReference, amountMinor: attempt.refundAmountMinor }, deliver);
   const schedulePayout = attempt => provider.createPayout({ providerReference: attempt.providerReference, amountMinor: attempt.payoutAmountMinor }, deliver);
 
-  return {
+  const service = {
     createAttempt({ booking, dataset, user }) {
-      requireThat(booking.status === 'confirmed' && booking.receiverAcceptedAt && !booking.loadRef, 'Payment is available only for a confirmed booking before dispatch.', 409);
+      requireThat(booking.status === 'confirmed' && booking.receiverAcceptedAt, 'Payment is available only for a confirmed, receiver-accepted booking.', 409);
       const existing = paymentModel.latestForBooking(booking.id);
       if (existing?.paymentStatus === 'pending' || existing?.paymentStatus === 'paid' || existing?.paymentStatus === 'adjustment' || existing?.paymentStatus === 'disputed') return existing;
       const material = dataset.materials.find(item => item.id === booking.materialId);
@@ -51,10 +53,6 @@ export function createPaymentService({ paymentModel, provider, datasetModel }) {
       const attempt = paymentModel.createAttempt({ bookingId: booking.id, payerUserId: receiverUserId, providerUserId, providerName: provider.name, providerReference: intent.providerReference, qrPayload: intent.qrPayload, amountMinor, createdAt: now() });
       provider.schedulePaymentResult({ providerReference: intent.providerReference, amountMinor }, deliver);
       return attempt;
-    },
-    canDispatch(bookingId) {
-      const attempt = paymentModel.latestForBooking(bookingId);
-      return attempt?.paymentStatus === 'paid' && attempt.payoutStatus === 'held';
     },
     afterVerification(dataset, bookingId) {
       const attempt = paymentModel.latestForBooking(bookingId);
@@ -82,4 +80,5 @@ export function createPaymentService({ paymentModel, provider, datasetModel }) {
     },
     recordWebhook: processWebhook,
   };
+  return service;
 }

@@ -62,10 +62,10 @@ function serveFrontend(req, res, path) {
   requireThat(requested.startsWith(dist + '/') || requested.startsWith(dist + '\\') || requested === dist, 'Invalid path.', 400);
   const staticFile = Boolean(extname(requested));
   if (staticFile) requireThat(existsSync(requested) && statSync(requested).isFile(), 'File not found.', 404);
-  const file = staticFile ? requested : resolve(dist, 'index.html');
+  const file = staticFile ? requested : resolve(dist, path === '/' ? 'index.html' : 'app.html');
   requireThat(existsSync(file), 'Build the frontend with npm run build, or run npm run dev.', 404);
   const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.png': 'image/png', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.woff2': 'font/woff2', '.mp4': 'video/mp4' }[extname(file)] ?? 'application/octet-stream';
-  res.writeHead(200, { 'Content-Type': mime, 'Cache-Control': file.endsWith('index.html') ? 'no-cache' : 'public, max-age=3600' });
+  res.writeHead(200, { 'Content-Type': mime, 'Cache-Control': file.endsWith('.html') ? 'no-cache' : 'public, max-age=3600' });
   res.end(req.method === 'HEAD' ? undefined : readFileSync(file));
 }
 
@@ -95,7 +95,8 @@ export function createBackend(options = {}) {
   if (!postgres) supportModel.ensureRequests(datasetModel.load().supportRequests);
 
   const paymentProvider = options.paymentProvider ?? createMockPaymentProvider();
-  const paymentService = createPaymentService({ paymentModel, provider: paymentProvider, datasetModel });
+  const paymentService = createPaymentService({ paymentModel, provider: paymentProvider, datasetModel,
+    runWebhook: operation => postgres ? postgres.run(operation) : operation() });
   const monetizationService = createMonetizationService({ model: monetizationModel, provider: paymentProvider, datasetModel, userModel, adminModel, auctionModel });
   const datasetService = createDatasetService({ datasetModel, userModel, negotiationModel, paymentModel, supportModel, adminModel, auctionModel, monetizationService });
   const auctionService = createAuctionService({ auctionModel, datasetModel, datasetService, userModel, adminModel, negotiationModel, monetizationService });

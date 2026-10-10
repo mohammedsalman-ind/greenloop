@@ -4,7 +4,7 @@ import { ScrollToTop } from "./components/common/ScrollToTop";
 import { GreenLoopStoreProvider } from "./store/GreenLoopStore";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
-import Landing from "./pages/site/Landing";
+import PublicLanding from "./pages/site/PublicLanding";
 
 const AppLayout = lazy(() => import("./layout/AppLayout"));
 const SignIn = lazy(() => import("./pages/AuthPages/SignIn"));
@@ -99,7 +99,7 @@ export default function App() {
                 </Route>
               </Route>
               {/* Experience 1 — public editorial website */}
-              <Route index path="/" element={<Landing />} />
+              <Route index path="/" element={<PublicLanding />} />
               <Route path="/platform" element={<Navigate to="/app" replace />} />
 
               {/* Experience 2 — GreenLoop platform under AppLayout */}

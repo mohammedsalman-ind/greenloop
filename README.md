@@ -5,6 +5,7 @@ GreenLoop connects construction and demolition material providers with receivers
 ## Architecture
 
 - `frontend/` — React 19, TypeScript, Vite 8, Tailwind CSS 4, client routing, UI state, and static assets.
+- `greenloop-story/` — standalone 13-chapter public site. Development and production builds import its bundled `dist/` into `frontend/public/landing/`, adding account and platform links. After rebuilding the story, run `npm.cmd run import:public-site` to refresh an already running frontend.
 - `backend/` — Node 24 HTTP API, authentication, validation, SQLite/Supabase PostgreSQL persistence, workflow actions, and integration tests.
 - `shared/domain/` — pure GreenLoop domain types, matching and capacity rules, and metrics used by the frontend and backend.
 - `scripts/` — development process runner and HTTP/runtime audit utilities.
