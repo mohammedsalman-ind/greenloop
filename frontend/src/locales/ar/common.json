@@ -1,4 +1,38 @@
 {
+  "onboarding": {
+    "metaTitle": "إعداد مساحة العمل | GreenLoop",
+    "metaDescription": "اختر دورك وأضف تفاصيل مؤسستك.",
+    "restoring": "جارٍ استعادة جلستك…",
+    "backToSite": "العودة إلى GreenLoop",
+    "setup": "إعداد مساحة العمل",
+    "roleTitle": "اختر دورك",
+    "roleDescription": "أخبر GreenLoop كيف ستستخدم شبكة استعادة المواد.",
+    "organizationTitle": "تفاصيل المؤسسة",
+    "organizationDescription": "اختياري — تُضاف إلى ملفك الشخصي.",
+    "organizationName": "اسم المؤسسة",
+    "organizationPlaceholder": "مثال: شركة مواد البناء",
+    "location": "الموقع / المنطقة",
+    "locationPlaceholder": "مثال: لندن، المملكة المتحدة",
+    "vat": "الرقم الضريبي / رقم الشركة",
+    "optional": "اختياري",
+    "back": "رجوع",
+    "finish": "إنهاء الإعداد",
+    "saving": "جارٍ الحفظ…",
+    "roles": {
+      "provider": {
+        "title": "مورد مواد",
+        "description": "لديّ مواد لاستعادتها."
+      },
+      "receiver": {
+        "title": "مستقبل مواد",
+        "description": "أحتاج إلى مواد لمنشأتي."
+      },
+      "both": {
+        "title": "كلاهما",
+        "description": "أورد المواد وأستقبلها."
+      }
+    }
+  },
   "recordCrud": {
     "edit": "تعديل",
     "delete": "حذف",

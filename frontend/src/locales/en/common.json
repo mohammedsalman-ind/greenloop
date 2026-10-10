@@ -1,4 +1,38 @@
 {
+  "onboarding": {
+    "metaTitle": "Set up your workspace | GreenLoop",
+    "metaDescription": "Choose your role and add your organization details.",
+    "restoring": "Restoring your session…",
+    "backToSite": "Back to GreenLoop",
+    "setup": "Set up your workspace",
+    "roleTitle": "Choose your role",
+    "roleDescription": "Tell GreenLoop how you will use the recovery network.",
+    "organizationTitle": "Organization details",
+    "organizationDescription": "Optional — prefills your profile.",
+    "organizationName": "Organization Name",
+    "organizationPlaceholder": "e.g. Riverstone Aggregates",
+    "location": "Location / Region",
+    "locationPlaceholder": "e.g. London, UK",
+    "vat": "VAT / Company Number",
+    "optional": "Optional",
+    "back": "Back",
+    "finish": "Finish Setup",
+    "saving": "Saving…",
+    "roles": {
+      "provider": {
+        "title": "Material provider",
+        "description": "I have materials to recover."
+      },
+      "receiver": {
+        "title": "Material receiver",
+        "description": "I need materials for my facility."
+      },
+      "both": {
+        "title": "Both",
+        "description": "I supply and receive materials."
+      }
+    }
+  },
   "recordCrud": {
     "edit": "Edit",
     "delete": "Delete",

@@ -1,4 +1,38 @@
 {
+  "onboarding": {
+    "metaTitle": "Configura tu espacio de trabajo | GreenLoop",
+    "metaDescription": "Elige tu rol y añade los datos de tu organización.",
+    "restoring": "Restaurando tu sesión…",
+    "backToSite": "Volver a GreenLoop",
+    "setup": "Configura tu espacio de trabajo",
+    "roleTitle": "Elige tu rol",
+    "roleDescription": "Cuéntale a GreenLoop cómo usarás la red de recuperación.",
+    "organizationTitle": "Datos de la organización",
+    "organizationDescription": "Opcional — completa tu perfil.",
+    "organizationName": "Nombre de la organización",
+    "organizationPlaceholder": "p. ej. Riverstone Aggregates",
+    "location": "Ubicación / Región",
+    "locationPlaceholder": "p. ej. Londres, Reino Unido",
+    "vat": "N.º de IVA / Empresa",
+    "optional": "Opcional",
+    "back": "Atrás",
+    "finish": "Finalizar configuración",
+    "saving": "Guardando…",
+    "roles": {
+      "provider": {
+        "title": "Proveedor de materiales",
+        "description": "Tengo materiales para recuperar."
+      },
+      "receiver": {
+        "title": "Receptor de materiales",
+        "description": "Necesito materiales para mi instalación."
+      },
+      "both": {
+        "title": "Ambos",
+        "description": "Suministro y recibo materiales."
+      }
+    }
+  },
   "recordCrud": {
     "edit": "Editar",
     "delete": "Eliminar",
