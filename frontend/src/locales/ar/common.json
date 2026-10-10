@@ -96,7 +96,7 @@
   },
   "orderPayment": {
     "title": "الدفع والتحويل",
-    "waiting": "يبدأ الدفع بعد تأكيد الحجز ويجب إتمامه قبل الإرسال.",
+    "waiting": "الدفع متاح بعد تأكيد الحجز. الإرسال لا يتطلب تأكيد الدفع.",
     "reference": "مرجع مزود الدفع",
     "acceptedValue": "قيمة المواد المقبولة",
     "commission": "عمولة GreenLoop",
@@ -117,7 +117,6 @@
     "payoutStatus": { "held": "معلق", "pending": "قيد الانتظار", "settled": "تمت التسوية", "failed": "فشل", "disputed": "متنازع عليه", "not_eligible": "غير مستحق" }
   },
   "orderTracking": {
-    "dispatchPaymentRequired": "أكد الدفع في تفاصيل الطلب قبل الإرسال.",
     "title": "حالة التسليم",
     "booked": "تم الحجز",
     "pendingPickup": "بانتظار الاستلام",

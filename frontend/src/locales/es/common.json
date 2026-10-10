@@ -96,7 +96,7 @@
   },
   "orderPayment": {
     "title": "Pago y desembolso",
-    "waiting": "El pago comienza tras confirmar la reserva y debe completarse antes del envío.",
+    "waiting": "El pago está disponible tras confirmar la reserva. El envío no requiere la confirmación del pago.",
     "reference": "Referencia del proveedor",
     "acceptedValue": "Valor del material aceptado",
     "commission": "Comisión de GreenLoop",
@@ -117,7 +117,6 @@
     "payoutStatus": { "held": "Retenido", "pending": "Pendiente", "settled": "Liquidado", "failed": "Fallido", "disputed": "En disputa", "not_eligible": "No aplicable" }
   },
   "orderTracking": {
-    "dispatchPaymentRequired": "Confirma el pago en los detalles del pedido antes del envío.",
     "title": "Estado de entrega",
     "booked": "Reservado",
     "pendingPickup": "Pendiente de recogida",

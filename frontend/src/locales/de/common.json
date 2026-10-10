@@ -96,7 +96,7 @@
   },
   "orderPayment": {
     "title": "Zahlung & Auszahlung",
-    "waiting": "Die Zahlung startet nach der Buchungsbestätigung und muss vor dem Versand eingehen.",
+    "waiting": "Die Zahlung ist nach der Buchungsbestätigung möglich. Der Versand erfordert keine Zahlungsbestätigung.",
     "reference": "Anbieterreferenz",
     "acceptedValue": "Wert des angenommenen Materials",
     "commission": "GreenLoop-Provision",
@@ -117,7 +117,6 @@
     "payoutStatus": { "held": "Gehalten", "pending": "Ausstehend", "settled": "Abgerechnet", "failed": "Fehlgeschlagen", "disputed": "Strittig", "not_eligible": "Nicht zutreffend" }
   },
   "orderTracking": {
-    "dispatchPaymentRequired": "Bestätigen Sie die Zahlung in den Bestelldetails vor dem Versand.",
     "title": "Lieferstatus",
     "booked": "Gebucht",
     "pendingPickup": "Abholung ausstehend",

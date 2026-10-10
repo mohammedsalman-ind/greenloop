@@ -96,7 +96,7 @@
   },
   "orderPayment": {
     "title": "Payment & payout",
-    "waiting": "Payment starts after booking confirmation and must clear before dispatch.",
+    "waiting": "Payment is available after booking confirmation. Dispatch does not require payment confirmation.",
     "reference": "Provider reference",
     "acceptedValue": "Accepted material value",
     "commission": "GreenLoop commission",
@@ -117,7 +117,6 @@
     "payoutStatus": { "held": "Held", "pending": "Pending", "settled": "Settled", "failed": "Failed", "disputed": "Disputed", "not_eligible": "Not eligible" }
   },
   "orderTracking": {
-    "dispatchPaymentRequired": "Confirm payment in Order details before dispatch.",
     "title": "Delivery status",
     "booked": "Booked",
     "pendingPickup": "Pending Pickup",

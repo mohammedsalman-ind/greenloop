@@ -5,7 +5,94 @@ import { tmpdir } from 'node:os';
 import { join, resolve, dirname } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { createBackend } from '../src/app.mjs';
+import { createBackend as createTestBackend } from './databaseHarness.mjs';
 import { createMockPaymentProvider } from '../src/services/payment-provider.mock.mjs';
+
+test('dispatch is independent of payment and late payment still settles verified deliveries', async () => {
+  const directory = mkdtempSync(join(tmpdir(), 'greenloop-dispatch-payment-'));
+  const mock = createMockPaymentProvider({ delayMs: 5 });
+  const scheduled = [];
+  const server = createTestBackend({ dataDir: directory, paymentProvider: {
+    ...mock,
+    schedulePaymentResult(intent, deliver) { scheduled.push({ intent, deliver }); },
+  } });
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  const base = `http://127.0.0.1:${server.address().port}/api`;
+  const client = () => {
+    let cookie = '';
+    return async (path, method = 'GET', data, expected = 200) => {
+      const response = await fetch(`${base}${path}`, { method, headers: { 'Content-Type': 'application/json', 'X-GreenLoop-Client': 'web', Cookie: cookie }, body: data === undefined ? undefined : JSON.stringify(data) });
+      if (response.headers.get('set-cookie')) cookie = response.headers.get('set-cookie').split(';')[0];
+      const body = await response.json(); assert.equal(response.status, expected, JSON.stringify(body)); return body;
+    };
+  };
+  const provider = client(), receiver = client();
+  const action = (request, name, ...args) => request('/actions', 'POST', { action: name, args });
+  let eventId = 0;
+  const deliverPayment = async (entry, type) => {
+    const event = { ...entry.intent, eventId: `dispatch-test-${++eventId}`, providerName: 'mock', type, occurredAt: new Date().toISOString() };
+    await entry.deliver(event, mock.signWebhook(event));
+  };
+  try {
+    await provider('/auth/register', 'POST', { email: 'dispatch-provider@example.com', password: 'password123' }, 201);
+    await provider('/profile', 'PATCH', { workspaces: ['provider'] });
+    await receiver('/auth/register', 'POST', { email: 'dispatch-receiver@example.com', password: 'password123' }, 201);
+    const receiverId = (await receiver('/profile', 'PATCH', { workspaces: ['receiver'] })).user.receiverId;
+    const date = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
+    const slot = (await action(receiver, 'addCapacityAction', { receiverId, date, materialType: 'concrete', capacityT: 20 })).result;
+    const project = (await action(provider, 'addProjectAction', { name: 'Dispatch site', location: 'Delhi', status: 'active' })).result;
+    for (const status of ['none', 'pending', 'failed', 'paid']) {
+      const material = (await action(provider, 'addMaterialAction', { projectId: project.id, type: 'concrete', quantityT: 2, quantityRangeT: [2, 2], condition: 'good', grade: 'A', confidence: 1, pricePerT: 1000, evidence: [] })).result;
+      const reserved = await action(provider, 'requestCapacityAction', { materialId: material.id, receiverId, slotId: slot.id, tonnesT: 2 });
+      const booking = reserved.dataset.bookings.find(item => item.materialId === material.id);
+      const dispatch = { action: 'dispatchAction', args: [{ bookingId: booking.id }] };
+      await provider('/actions', 'POST', dispatch, 409);
+      await action(receiver, 'acceptRequestAction', booking.id);
+      await action(provider, 'updateDeliveryAction', booking.id, 'ready');
+      await provider('/actions', 'POST', dispatch, 409);
+      await action(provider, 'updateDeliveryAction', booking.id, 'picked-up');
+      let entry;
+      if (status !== 'none') {
+        await action(receiver, 'createPaymentAttemptAction', { bookingId: booking.id });
+        entry = scheduled.at(-1);
+        if (status === 'failed') await deliverPayment(entry, 'payment.failed');
+        if (status === 'paid') await deliverPayment(entry, 'payment.captured');
+      }
+      await receiver('/actions', 'POST', dispatch, 403);
+      await action(provider, 'dispatchAction', { bookingId: booking.id });
+      const dispatched = (await provider('/dataset')).dataset;
+      assert.ok(dispatched.bookings.find(item => item.id === booking.id).loadRef, status);
+      assert.equal(dispatched.payments.find(item => item.bookingId === booking.id)?.paymentStatus, status === 'none' ? undefined : status);
+      await provider('/actions', 'POST', dispatch, 409);
+      await action(provider, 'updateDeliveryAction', booking.id, 'arrived');
+      await action(receiver, 'receiveLoadAction', booking.id, 2, []);
+      const verification = (await receiver('/dataset')).dataset.verifications.find(item => item.bookingId === booking.id);
+      await action(receiver, 'verifyLoadAction', verification.id, 1.5, 0.5, 'Rejected portion');
+      if (status === 'none' || status === 'failed') {
+        // A new payment or retry must remain available after dispatch and verification.
+        await provider('/actions', 'POST', { action: 'createPaymentAttemptAction', args: [{ bookingId: booking.id }] }, 403);
+        await action(receiver, 'createPaymentAttemptAction', { bookingId: booking.id });
+        entry = scheduled.at(-1);
+      }
+      if (status !== 'paid') await deliverPayment(entry, 'payment.captured');
+      let payment;
+      for (let attempt = 0; attempt < 100; attempt++) {
+        payment = (await receiver('/dataset')).dataset.payments.find(item => item.bookingId === booking.id);
+        if (payment.payoutStatus === 'settled' && payment.refundStatus === 'refunded') break;
+        await new Promise(resolve => setTimeout(resolve, 10));
+      }
+      assert.equal(payment.payoutStatus, 'settled', status);
+      assert.equal(payment.refundStatus, 'refunded', status);
+      assert.equal(payment.acceptedValueMinor, 150000);
+      assert.equal(payment.refundAmountMinor, 50000);
+      assert.equal(payment.payoutAmountMinor, 142500);
+    }
+  } finally {
+    await new Promise(resolve => server.close(resolve));
+    assert.equal(dirname(resolve(directory)), resolve(tmpdir()));
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
 
 test('auction award lets the winning receiver propose destination and slot before bilateral booking approval', async () => {
   const directory = mkdtempSync(join(tmpdir(), 'greenloop-auction-terms-'));

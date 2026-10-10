@@ -169,7 +169,6 @@ export function createActionService({ datasetModel, datasetService, userModel, u
           }
           case 'dispatchAction': {
             const b = providerBooking(args[0].bookingId); requireThat(b.status === 'confirmed' && b.receiverAcceptedAt && !b.loadRef, 'The receiver must accept this booking before dispatch.', 409);
-            requireThat(paymentService.canDispatch(b.id), 'Payment must be confirmed before dispatch.', 409);
             const stages = dataset.events.filter(event => event.subjectIds.includes(b.id));
             requireThat(!stages.some(event => event.kind === 'delivery.ready') || stages.some(event => event.kind === 'delivery.picked-up'), 'Record pickup before dispatching this load.', 409);
             result = engine.dispatchAction({ bookingId: b.id }); break;
