@@ -1,6 +1,7 @@
 import { createActions } from '../actions.ts';
 import { ApiError, choice, date, geo, number, requireThat, text } from '../validation.mjs';
 import { availableT, requestCapacity, slotMatchesDemandPeriod } from '../../../shared/domain/capacity.ts';
+import { acceptedOffersAwaitingBooking } from '../../../shared/domain/orders.ts';
 
 const materialType = value => {
   requireThat(typeof value === 'string', 'Invalid material type.');
@@ -67,7 +68,7 @@ export function createActionService({ datasetModel, datasetService, userModel, u
         const receiverBooking = id => { role('receiver'); const item = booking(id); own(item.receiverId, user); return item; };
         const providerBooking = id => { role('provider'); const item = booking(id); own(item.materialId, user); return item; };
         const offer = id => { role('receiver'); const item = dataset.offers.find(o => o.id === id); requireThat(item, 'Offer not found.', 404); own(dataset.demands.find(d => d.id === item.demandId)?.receiverId, user); requireThat(item.status === 'pending', 'This offer has already been decided.', 409); return item; };
-        const receiverActions = ['updateDemandAction', 'deleteDemandAction', 'addDemandAction', 'saveDemandDraftAction', 'deleteDemandDraftAction', 'addCapacityAction', 'updateCapacityAction', 'acceptOfferAction', 'declineOfferAction', 'acceptRequestAction', 'rejectRequestAction', 'rescheduleRequestAction', 'receiveLoadAction', 'verifyLoadAction', 'verifyAction'];
+        const receiverActions = ['updateDemandAction', 'deleteDemandAction', 'addDemandAction', 'saveDemandDraftAction', 'deleteDemandDraftAction', 'addCapacityAction', 'updateCapacityAction', 'acceptOfferAction', 'scheduleAcceptedOfferAction', 'declineOfferAction', 'acceptRequestAction', 'rejectRequestAction', 'rescheduleRequestAction', 'receiveLoadAction', 'verifyLoadAction', 'verifyAction'];
         if (action === 'counterOfferAction' && user.activeWorkspace === 'receiver') receiverActions.push(action);
         if (action === 'cancelDemandAction' || (action === 'archiveBookingAction' && user.activeWorkspace === 'receiver')) receiverActions.push(action);
         const engine = createActions(dataset, { kind: receiverActions.includes(action) ? 'receiver' : 'contractor', name: user.name || user.email });
@@ -208,6 +209,22 @@ export function createActionService({ datasetModel, datasetService, userModel, u
             role('provider'); const offerId = text(args[0], 'offer ID', 250); const item = dataset.offers.find(candidate => candidate.id === offerId);
             requireThat(item && item.status === 'draft', 'Only a saved draft offer can be deleted.', 409); own(item.passportId, user);
             result = engine.deleteOfferDraftAction(offerId); requireThat(result, 'This draft offer no longer exists.', 409); break;
+          }
+          case 'scheduleAcceptedOfferAction': {
+            role('receiver');
+            const item = acceptedOffersAwaitingBooking(dataset).find(candidate => candidate.id === args[0]);
+            requireThat(item && !item.auctionId, 'This accepted offer is not awaiting a receiving slot.', 409);
+            const demand = dataset.demands.find(candidate => candidate.id === item.demandId);
+            own(demand.receiverId, user);
+            const material = dataset.materials.find(candidate => candidate.id === item.passportId && !candidate.archivedAt);
+            const slot = dataset.slots.find(candidate => candidate.id === text(args[1], 'receiving slot ID', 250));
+            requireThat(material && slot && slot.receiverId === demand.receiverId && slot.materialType === material.type, 'Choose a compatible receiving slot.', 409);
+            requireThat(slot.date >= new Date().toISOString().slice(0, 10) && slotMatchesDemandPeriod(slot, demand.period) && (!material.availableFrom || slot.date >= material.availableFrom), 'Choose a receiving date within the request period and material availability.', 409);
+            const materialCommitted = dataset.bookings.filter(booking => booking.materialId === material.id && booking.status !== 'cancelled').reduce((sum, booking) => sum + booking.tonnesT, 0);
+            const demandCommitted = dataset.bookings.filter(booking => booking.demandId === demand.id && booking.status !== 'cancelled').reduce((sum, booking) => sum + booking.tonnesT, 0);
+            requireThat(item.offeredQuantityT <= material.quantityT - materialCommitted - (auctionService?.reservedT(material.id) ?? 0) && item.offeredQuantityT <= demand.requiredT - demandCommitted && item.offeredQuantityT <= availableT(slot, dataset.bookings), 'The material, request, or receiving capacity is no longer available for this quantity.', 409);
+            result = engine.acceptOfferAction(item.id, slot.id);
+            break;
           }
           case 'acceptOfferAction': {
             const item = offer(args[0]);

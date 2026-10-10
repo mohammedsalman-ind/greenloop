@@ -537,16 +537,19 @@ export function createActions(initial: GreenLoopDataset, actor: Actor) {
     return true;
   };
 
-  const acceptOfferAction = (offerId: string) => {
+  const acceptOfferAction = (offerId: string, receivingSlotId?: string) => {
     setDataset((prev) => {
       const offers = prev.offers ?? [];
       const offer = offers.find((item) => item.id === offerId);
-      if (!offer || offer.status !== "pending") return prev;
+      if (!offer || (offer.status !== "pending" && !(offer.status === "accepted" && receivingSlotId))) return prev;
+      if (prev.bookings.some(booking => booking.offerId === offer.id || (!booking.offerId && booking.demandId === offer.demandId && booking.materialId === offer.passportId))) return prev;
       const demand = prev.demands.find((item) => item.id === offer.demandId);
       const material = prev.materials.find((item) => item.id === offer.passportId);
       if (!demand || !material) return prev;
       const eligibleSlots = prev.slots
-        .filter((item) => item.receiverId === demand.receiverId && item.materialType === material.type)
+        .filter((item) => item.receiverId === demand.receiverId && item.materialType === material.type &&
+          item.date >= new Date().toISOString().slice(0, 10) && slotMatchesDemandPeriod(item, demand.period) &&
+          (!material.availableFrom || item.date >= material.availableFrom) && (!receivingSlotId || item.id === receivingSlotId))
         .sort((a, b) => a.date.localeCompare(b.date));
 
       const at = new Date().toISOString();
@@ -566,7 +569,7 @@ export function createActions(initial: GreenLoopDataset, actor: Actor) {
         at,
       });
       const createdBooking = capacityResult.output.booking;
-      const acceptedBooking: Booking = { ...createdBooking, demandId: demand.id, ...(capacityResult.output.outcome === "confirmed" ? { receiverAcceptedAt: at } : {}), ...(agreedPricePerT !== undefined ? { agreedPricePerT } : {}) };
+      const acceptedBooking: Booking = { ...createdBooking, offerId: offer.id, demandId: demand.id, ...(capacityResult.output.outcome === "confirmed" ? { receiverAcceptedAt: at } : {}), ...(agreedPricePerT !== undefined ? { agreedPricePerT } : {}) };
       const attachedDataset: GreenLoopDataset = {
         ...capacityResult.dataset,
         bookings: capacityResult.dataset.bookings.map((item) => item.id === createdBooking.id ? acceptedBooking : item),

@@ -7,6 +7,8 @@ import OrderInvoiceAction from "@/components/greenloop/OrderInvoiceAction";
 import OrderTracking from "@/components/greenloop/OrderTracking";
 import OrderPaymentPanel from "@/components/greenloop/OrderPaymentPanel";
 import StatusBadge from "@/components/greenloop/StatusBadge";
+import AwaitingScheduleCard from "@/components/greenloop/AwaitingScheduleCard";
+import { acceptedOffersAwaitingBooking } from "@shared/domain/orders";
 import { useAuth } from "@/context/AuthContext.helpers";
 import type { InvoiceParty } from "@/lib/orderInvoice";
 import type { Booking, MaterialPassport } from "@shared/domain/types";
@@ -130,11 +132,19 @@ export default function BookingsDeliveries() {
     return { booking, material, verification, dispatched, ...classified };
   }), [dataset.bookings, dataset.materials, dataset.verifications, dataset.events]);
 
+  const awaitingOffers = useMemo(() => acceptedOffersAwaitingBooking(dataset), [dataset]);
+  const visibleAwaitingOffers = awaitingOffers.filter(offer => {
+    if (activeTab !== "ALL" && activeTab !== "ACTIVE") return false;
+    const material = dataset.materials.find(item => item.id === offer.passportId);
+    const demand = dataset.demands.find(item => item.id === offer.demandId);
+    return `${material?.type ?? demand?.materialType ?? ""} ${offer.id} ${offer.passportId} ${offer.providerId}`.toLowerCase().includes(search.trim().toLowerCase());
+  });
+
   const counts = useMemo(() => {
-    const map: Record<OrderTab, number> = { ALL: bookingsWithMeta.length, ACTIVE: 0, SCHEDULED: 0, IN_TRANSIT: 0, COMPLETED: 0 };
+    const map: Record<OrderTab, number> = { ALL: bookingsWithMeta.length + awaitingOffers.length, ACTIVE: awaitingOffers.length, SCHEDULED: 0, IN_TRANSIT: 0, COMPLETED: 0 };
     for (const item of bookingsWithMeta) map[item.tab] += 1;
     return map;
-  }, [bookingsWithMeta]);
+  }, [bookingsWithMeta, awaitingOffers]);
 
   const visibleBookings = useMemo(() => (
     bookingsWithMeta
@@ -246,13 +256,13 @@ export default function BookingsDeliveries() {
           {/* Order cards column                                     */}
           {/* ------------------------------------------------------ */}
           <div className={cn("min-w-0 flex-1", selectedFacts && "xl:max-w-[calc(100%-444px)]")}>
-            {visibleBookings.length === 0 ? (
+            {visibleBookings.length === 0 && visibleAwaitingOffers.length === 0 ? (
               <div className="rounded-2xl border border-dashed border-steel-300 bg-white/60 px-6 py-12 text-center dark:border-steel-700 dark:bg-white/[0.02]">
                 <h2 className="font-archivo text-lg font-bold text-ink-900 dark:text-white">
-                  {bookingsWithMeta.length ? "No orders match this view" : "No orders yet"}
+                  {counts.ALL ? "No orders match this view" : "No orders yet"}
                 </h2>
                 <p className="mt-2 text-sm text-steel-600 dark:text-gray-400">
-                  {bookingsWithMeta.length ? "Try a different tab or clear the search." : "Accepted material transactions will appear here once a booking is confirmed."}
+                  {counts.ALL ? "Try a different tab or clear the search." : "Accepted material transactions will appear here once a booking is confirmed."}
                 </p>
               </div>
             ) : (
@@ -263,6 +273,7 @@ export default function BookingsDeliveries() {
                 animate="show"
                 variants={{ hidden: {}, show: { transition: { staggerChildren: 0.05 } } }}
               >
+                {visibleAwaitingOffers.map(offer => <AwaitingScheduleCard key={offer.id} offer={offer} receiverWorkspace={activeWorkspace === "receiver"} />)}
                 {visibleBookings.map((facts) => (
                   <OrderCard
                     key={facts.booking.id}

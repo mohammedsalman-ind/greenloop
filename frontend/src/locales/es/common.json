@@ -300,5 +300,6 @@
     "failed": "No se pudo crear el proyecto. Inténtalo de nuevo.",
     "create": "Crear proyecto",
     "creating": "Creando proyecto…"
-  }
+  },
+  "acceptedOrders": {"awaitingSchedule":"Pendiente de programación","receiverHint":"Oferta aceptada. Selecciona capacidad de recepción para confirmar la reserva.","providerHint":"Oferta aceptada. El receptor está organizando una fecha de recepción.","chooseSlot":"Fecha de recepción","schedule":"Confirmar reserva","receivingPlan":"Planificar recepción","failed":"No se pudo confirmar la reserva. Comprueba la capacidad actual e inténtalo de nuevo."}
 }
