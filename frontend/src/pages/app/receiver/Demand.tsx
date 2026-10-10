@@ -9,7 +9,7 @@ import StatusBadge from "@/components/greenloop/StatusBadge";
 import Button from "@/components/ui/button/Button";
 import { ambientVideo, materialMediaFor } from "@/config/appMedia";
 import { useAuth } from "@/context/AuthContext.helpers";
-import { contextualMatch, slotLedger, slotMatchesDemandPeriod } from "@shared/domain/capacity";
+import { contextualMatch } from "@shared/domain/capacity";
 import { type GeoPoint, type MaterialTypeKey } from "@shared/domain/types";
 import { CalenderIcon, FileIcon, MapIcon } from "@/icons";
 import { useGreenLoopStore } from "@/store/GreenLoopStore.helpers";
@@ -35,7 +35,7 @@ const normalizeCustomType = (value: string) => value.trim().toLowerCase().replac
 
 export default function Demand() {
   const { t } = useTranslation();
-  const { dataset, addDemandAction, saveDemandDraftAction, declineOfferAction, cancelDemandAction, addCapacityAction, updateCapacityAction } = useGreenLoopStore();
+  const { dataset, addDemandAction, saveDemandDraftAction, acceptOfferAction, declineOfferAction, cancelDemandAction, addCapacityAction, updateCapacityAction } = useGreenLoopStore();
   const { user } = useAuth();
   const receiverId = user?.receiverId ?? "";
   const [searchParams] = useSearchParams();
@@ -525,18 +525,6 @@ export default function Demand() {
                       <div className="space-y-3">
                   {requestOffers.map(offer => {
                           const passport = dataset.materials.find((material) => material.id === offer.passportId);
-                          const committedT = dataset.bookings.filter((booking) => booking.materialId === offer.passportId && booking.status !== "cancelled")
-                            .reduce((total, booking) => total + booking.tonnesT, 0);
-                          const passportAvailableT = Math.max(0, (passport?.quantityT ?? 0) - committedT);
-                          const committedDemandT = dataset.bookings.filter((booking) => booking.demandId === demand.id && booking.status !== "cancelled")
-                            .reduce((total, booking) => total + booking.tonnesT, 0);
-                          const offerRemainingT = Math.max(0, demand.requiredT - committedDemandT);
-                          const eligibleSlots = dataset.slots.filter((slot) => slot.receiverId === demand.receiverId && slot.materialType === demand.materialType && slot.date >= new Date().toISOString().slice(0, 10) && slotMatchesDemandPeriod(slot, demand.period)).sort((a, b) => a.date.localeCompare(b.date));
-                          const receivingSlot = eligibleSlots.find((slot) => (slotLedger(dataset, slot.id)?.available ?? 0) >= offer.offeredQuantityT);
-                          const hasCapacity = Boolean(receivingSlot);
-                          const requestOpen = ["OPEN", "PARTIALLY_COVERED"].includes(demand.status);
-                          const blockedByQuantity = offer.offeredQuantityT > offerRemainingT;
-                          const blockedByStock = offer.offeredQuantityT > passportAvailableT;
                           const photo = passport ? materialMedia(passport)[0] : undefined;
                           const receiverDistanceKm = dataset.receivers.find((item) => item.id === demand.receiverId)?.distanceKm;
                           const matchCandidates = contextualMatch(dataset, { demandId: demand.id, offerId: offer.id });
@@ -556,22 +544,11 @@ export default function Demand() {
                               <div className="flex flex-wrap gap-2 sm:flex-col sm:w-32">
                                 <StatusBadge status={offer.status} />
                                 {offer.status === "pending" && <>
+                                  <Button size="sm" className="min-h-11 w-full" onClick={() => void acceptOfferAction(offer.id)}>Accept offer</Button>
                                   <Link className="inline-flex min-h-11 w-full items-center justify-center rounded-md bg-ink-900 px-4 text-sm font-semibold text-white dark:bg-white dark:text-ink-900" to={`/app/negotiations/${offer.id}`}>{t("negotiationReview")}</Link>
                                   <Button size="sm" className="min-h-11 w-full" variant="outline" onClick={() => declineOfferAction(offer.id)}>Decline</Button>
                                 </>}
                               </div>
-                              {offer.status === "pending" && <div className="basis-full space-y-2 border border-steel-200 bg-steel-50 p-3 text-sm dark:border-steel-700 dark:bg-white/5 rounded-surface">
-                                <p className="text-steel-700 dark:text-steel-300">{t("offerChecks.requirement", { total: demand.requiredT.toFixed(1), booked: committedDemandT.toFixed(1), remaining: offerRemainingT.toFixed(1) })}</p>
-                                {receivingSlot && <p className="font-medium text-loop-700 dark:text-loop-300">{t("offerChecks.dateReady", { date: formatDate(receivingSlot.date), quantity: offer.offeredQuantityT.toFixed(1) })}</p>}
-                                {(!requestOpen || blockedByQuantity || blockedByStock || !hasCapacity) && <div role="status" className="space-y-1 text-warning-700 dark:text-warning-400">
-                                  <p className="font-semibold">{t("offerChecks.blocked")}</p>
-                                  {!requestOpen && <p>{t("offerChecks.closed")}</p>}
-                                  {blockedByQuantity && <p>{t("offerChecks.quantity", { offered: offer.offeredQuantityT.toFixed(1), remaining: offerRemainingT.toFixed(1) })}</p>}
-                                  {blockedByQuantity && <p>{offerRemainingT > 0 ? t("offerChecks.quantityAction", { remaining: offerRemainingT.toFixed(1) }) : t("offerChecks.fulfilled")}</p>}
-                                  {blockedByStock && <p>{t("offerChecks.stock", { quantity: passportAvailableT.toFixed(1) })}</p>}
-                                  {!hasCapacity && <p>{eligibleSlots.length === 0 ? t("receivingPlan.needDate") : t("receivingPlan.needSpace", { quantity: offer.offeredQuantityT.toFixed(1) })}</p>}
-                                </div>}
-                              </div>}
                               
                               <details className="mt-1 basis-full"><summary className="cursor-pointer text-xs font-semibold text-loop-700 dark:text-loop-300">View Match Analysis</summary>
                                 <div className="mt-3 text-left">
