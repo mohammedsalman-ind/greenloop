@@ -1,5 +1,39 @@
 {
-  "auctions": {"tab":"Auctions","error":"Could not load or update auctions.","currentBid":"Current highest bid","awardDeadline":"Complete Final Terms by {{time}}","ends":"Ends {{time}}","provider":"Provider","detailTitle":"Auction details","highest":"Highest bid","nextBid":"Minimum next bid","endsAt":"Auction ends","reserve":"Reserve price","notSet":"No reserve","met":"Reserve met","notMet":"Reserve not met","bidAmount":"Your bid amount (INR)","placing":"Placing bid…","placeBid":"Place bid","youWon":"You are the provisional winner.","winnerNext":"The provisional winner is completing Final Terms.","completeWithin":"Both sides must complete Final Terms within 24 hours. The booking is not confirmed until both approve and capacity is checked.","continueTerms":"Continue to Final Terms","bidHistory":"Bid history","you":"you","noBids":"No bids yet.","noProviderAuctions":"You have no auctions yet.","noAuctions":"No open or recent auctions.","management":"Auction management","managementDescription":"Create and manage auctions for available material. Bids lock auction terms.","providerWorkspace":"Provider workspace","create":"Create auction","materials":"Materials","edit":"Edit auction","material":"Material passport","chooseMaterial":"Choose a material","quantity":"Auction quantity (tonnes)","startsAt":"Start time","endsAt":"End time","increment":"Minimum bid / increment (INR)","reserveOptional":"Reserve price (optional, INR)","saving":"Saving…","save":"Save auction","close":"Close","cancel":"Cancel auction","details":"Bid details","viewNegotiation":"View negotiation","negotiationContext":"Auction award · winning bid {{price}} is the starting price for Final Terms. It does not approve terms or create a booking.","pricePending":"winning bid","viewAuction":"View auction","adminTitle":"Auction inspection","adminReadOnly":"Read-only auction records. Bids and outcomes cannot be changed by admins.","adminProvider":"Provider","adminWinner":"Winner","adminNone":"—","adminPeriod":"Auction period","adminNegotiation":"Negotiation","adminBooking":"Booking","adminAward":"Award","adminEmpty":"No auction records."},
+  "onboarding": {
+    "metaTitle": "Set up your workspace | GreenLoop",
+    "metaDescription": "Choose your role and add your organization details.",
+    "restoring": "Restoring your session…",
+    "backToSite": "Back to GreenLoop",
+    "setup": "Set up your workspace",
+    "roleTitle": "Choose your role",
+    "roleDescription": "Tell GreenLoop how you will use the recovery network.",
+    "organizationTitle": "Organization details",
+    "organizationDescription": "Optional — prefills your profile.",
+    "organizationName": "Organization Name",
+    "organizationPlaceholder": "e.g. Riverstone Aggregates",
+    "location": "Location / Region",
+    "locationPlaceholder": "e.g. London, UK",
+    "vat": "VAT / Company Number",
+    "optional": "Optional",
+    "back": "Back",
+    "finish": "Finish Setup",
+    "saving": "Saving…",
+    "roles": {
+      "provider": {
+        "title": "Material provider",
+        "description": "I have materials to recover."
+      },
+      "receiver": {
+        "title": "Material receiver",
+        "description": "I need materials for my facility."
+      },
+      "both": {
+        "title": "Both",
+        "description": "I supply and receive materials."
+      }
+    }
+  },
+  "auctions": {"tab":"Auctions","error":"Could not load or update auctions.","currentBid":"Current highest bid","awardDeadline":"Complete Final Terms by {{time}}","ends":"Ends {{time}}","provider":"Provider","detailTitle":"Auction details","highest":"Highest bid","nextBid":"Minimum next bid","reserve":"Reserve price","notSet":"No reserve","met":"Reserve met","notMet":"Reserve not met","bidAmount":"Your bid amount (INR)","placing":"Placing bid…","placeBid":"Place bid","youWon":"You are the provisional winner.","winnerNext":"The provisional winner is completing Final Terms.","completeWithin":"Both sides must complete Final Terms within 24 hours. The booking is not confirmed until both approve and capacity is checked.","continueTerms":"Continue to Final Terms","bidHistory":"Bid history","you":"you","noBids":"No bids yet.","noProviderAuctions":"You have no auctions yet.","noAuctions":"No open or recent auctions.","management":"Auction management","managementDescription":"Create and manage auctions for available material. Bids lock auction terms.","providerWorkspace":"Provider workspace","create":"Create auction","materials":"Materials","edit":"Edit auction","material":"Material passport","chooseMaterial":"Choose a material","quantity":"Auction quantity (tonnes)","startsAt":"Start time","endsAt":"End time","increment":"Minimum bid / increment (INR)","reserveOptional":"Reserve price (optional, INR)","saving":"Saving…","save":"Save auction","close":"Close","cancel":"Cancel auction","details":"Bid details","viewNegotiation":"View negotiation","negotiationContext":"Auction award · winning bid {{price}} is the starting price for Final Terms. It does not approve terms or create a booking.","pricePending":"winning bid","viewAuction":"View auction","adminTitle":"Auction inspection","adminReadOnly":"Read-only auction records. Bids and outcomes cannot be changed by admins.","adminProvider":"Provider","adminWinner":"Winner","adminNone":"—","adminPeriod":"Auction period","adminNegotiation":"Negotiation","adminBooking":"Booking","adminAward":"Award","adminEmpty":"No auction records."},
   "monetization": {"planBilling":"Plan & Billing","premiumPlan":"Premium plan","freePlan":"Free plan","activeThrough":"Active through {{date}}","freeAvailable":"Free features remain available.","premiumBadge":"Premium marketplace badge and enhanced listing visibility","advancedAnalytics":"Advanced operational analytics","impactReports":"Impact and ESG reports","monthlyPlan":"Mock subscription: ₹999 for one month, no auto-renewal","latestPayment":"Latest payment","sandboxPending":"Sandbox payment pending · {{amount}}","verifiedServer":"Status updates after server-side mock verification. This is not a real payment.","startingPayment":"Starting payment…","upgrade":"Upgrade to Premium · ₹999","renew":"Renew Premium","loading":"Loading premium status…","startError":"Could not start Premium payment.","sponsorActive":"Sponsored through active campaign.","sponsorListing":"Sponsor listing","days7":"7 days · ₹199","days14":"14 days · ₹398","days30":"30 days · ₹852.86","promote":"Promote listing","starting":"Starting…","feeStatus":"Fee status","sandboxOnly":"Sandbox only. Activation follows server verification.","sponsorshipError":"Could not start sponsorship.","premiumImpact":"Premium · Impact & ESG","verifiedRecovery":"Verified material recovery","verifiedData":"Verified operational data","surveyedMaterial":"Surveyed material","acceptedRecovery":"Verified accepted recovery","verifiedLoads":"Verified loads","acceptedShare":"accepted","downloadReport":"Download impact report (CSV)","advancedAvailable":"Advanced impact reporting is available with Premium. Basic analytics remain available.","viewPlan":"View plan","loadingReport":"Loading premium report…","verifiedTonnes":"Reported tonnes come from verified deliveries. GreenLoop does not infer emissions savings or certification claims.","adminTitle":"Monetization","adminDescription":"Demo entitlements and payment attempt inspection.","readOnly":"Read-only view. Entitlement management is available to Super Admins.","findAccount":"Find account","searchAccount":"Search email or name","account":"Account","chooseAccount":"Choose user","action":"Action","grant":"Grant","extend":"Extend from current expiry","revoke":"Revoke","durationDays":"Duration (days)","orSetExpiry":"Or set expiry date","reason":"Reason","saving":"Saving…","applyEntitlement":"Apply Premium entitlement","entitlements":"Entitlements","user":"User","source":"Source","status":"Status","expires":"Expires","recentAttempts":"Recent payment attempts","payer":"Payer","product":"Product","target":"Target","amount":"Amount","providerReference":"Provider reference","metric":"Metric","value":"Value","reportError":"Could not load advanced impact data.","participationFee":"One-time participation fee · ₹49","participationExplain":"Join this auction once, then bid any number of times.","joinAuction":"Join auction · ₹49","retryJoin":"Retry join payment","auctionStatus":{"scheduled":"Scheduled","open":"Open","closed":"Closed","awarded":"Awarded","award_expired":"Award expired","no_sale":"No sale","completed":"Completed","cancelled":"Cancelled","paid":"Paid","pending":"Pending","failed":"Failed","refunded":"Refunded"},"productTypes":{"premium_subscription":"Premium subscription","sponsored_listing":"Sponsored listing","auction_hosting":"Auction hosting","auction_participation":"Auction participation"},"sourceTypes":{"purchase":"Purchase","admin_grant":"Admin grant"},"paymentStatus":{"refund_pending":"Refund pending","refunded":"Refunded","active":"Active","revoked":"Revoked"},"auctionHostingFee":"Auction hosting fee · ₹199","auctionUnpublished":"The auction is unpublished until the server verifies payment.","paymentPending":"Payment pending…","retryHosting":"Retry hosting payment","notPublished":"Auction is unpublished until ₹199 hosting fee is verified."},
   "recordCrud": {
     "edit": "Edit",
@@ -62,7 +96,7 @@
   },
   "orderPayment": {
     "title": "Payment & payout",
-    "waiting": "Payment starts after booking confirmation and must clear before dispatch.",
+    "waiting": "Payment is available after booking confirmation. Dispatch does not require payment confirmation.",
     "reference": "Provider reference",
     "acceptedValue": "Accepted material value",
     "commission": "GreenLoop commission",
@@ -83,7 +117,6 @@
     "payoutStatus": { "held": "Held", "pending": "Pending", "settled": "Settled", "failed": "Failed", "disputed": "Disputed", "not_eligible": "Not eligible" }
   },
   "orderTracking": {
-    "dispatchPaymentRequired": "Confirm payment in Order details before dispatch.",
     "title": "Delivery status",
     "booked": "Booked",
     "pendingPickup": "Pending Pickup",

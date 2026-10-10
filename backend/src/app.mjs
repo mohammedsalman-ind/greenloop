@@ -35,6 +35,9 @@ import { createAuctionsController } from './controllers/auctions.controller.mjs'
 import { createMonetizationModel } from './models/monetization.model.mjs';
 import { createMonetizationService } from './services/monetization.service.mjs';
 import { createMonetizationController } from './controllers/monetization.controller.mjs';
+import { createFacilityResearchController } from './controllers/facility-research.controller.mjs';
+import { createFacilityResearchService } from './services/facility-research.service.mjs';
+import { createFacilityPublicResearchService } from './services/facility-public-research.service.mjs';
 import { createRoutes } from './routes/index.mjs';
 import { openPostgres } from './database/postgres.mjs';
 import { bufferedResponse } from './controllers/bufferedResponse.mjs';
@@ -62,10 +65,10 @@ function serveFrontend(req, res, path) {
   requireThat(requested.startsWith(dist + '/') || requested.startsWith(dist + '\\') || requested === dist, 'Invalid path.', 400);
   const staticFile = Boolean(extname(requested));
   if (staticFile) requireThat(existsSync(requested) && statSync(requested).isFile(), 'File not found.', 404);
-  const file = staticFile ? requested : resolve(dist, 'index.html');
+  const file = staticFile ? requested : resolve(dist, path === '/' ? 'index.html' : 'app.html');
   requireThat(existsSync(file), 'Build the frontend with npm run build, or run npm run dev.', 404);
   const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.png': 'image/png', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.woff2': 'font/woff2', '.mp4': 'video/mp4' }[extname(file)] ?? 'application/octet-stream';
-  res.writeHead(200, { 'Content-Type': mime, 'Cache-Control': file.endsWith('index.html') ? 'no-cache' : 'public, max-age=3600' });
+  res.writeHead(200, { 'Content-Type': mime, 'Cache-Control': file.endsWith('.html') ? 'no-cache' : 'public, max-age=3600' });
   res.end(req.method === 'HEAD' ? undefined : readFileSync(file));
 }
 
@@ -95,7 +98,8 @@ export function createBackend(options = {}) {
   if (!postgres) supportModel.ensureRequests(datasetModel.load().supportRequests);
 
   const paymentProvider = options.paymentProvider ?? createMockPaymentProvider();
-  const paymentService = createPaymentService({ paymentModel, provider: paymentProvider, datasetModel });
+  const paymentService = createPaymentService({ paymentModel, provider: paymentProvider, datasetModel,
+    runWebhook: operation => postgres ? postgres.run(operation) : operation() });
   const monetizationService = createMonetizationService({ model: monetizationModel, provider: paymentProvider, datasetModel, userModel, adminModel, auctionModel });
   const datasetService = createDatasetService({ datasetModel, userModel, negotiationModel, paymentModel, supportModel, adminModel, auctionModel, monetizationService });
   const auctionService = createAuctionService({ auctionModel, datasetModel, datasetService, userModel, adminModel, negotiationModel, monetizationService });
@@ -113,7 +117,9 @@ export function createBackend(options = {}) {
   const adminController = createAdminController(adminService);
   const auctionsController = createAuctionsController(auctionService);
   const systemController = createSystemController();
-  const routes = createRoutes({ authController, datasetController, actionsController, uploadsController, paymentsController, adminController, auctionsController, monetizationController: createMonetizationController(monetizationService), requireAuth, systemController });
+  const facilityResearchService = options.facilityResearchService ?? Object.assign(
+    createFacilityResearchService({ datasetModel }), createFacilityPublicResearchService({ datasetModel }));
+  const routes = createRoutes({ authController, datasetController, actionsController, uploadsController, paymentsController, adminController, auctionsController, monetizationController: createMonetizationController(monetizationService), facilityResearchController: createFacilityResearchController(facilityResearchService), requireAuth, systemController });
   const allowedOrigins = new Set(options.origins ?? (production ? [process.env.PUBLIC_ORIGIN] : [process.env.PUBLIC_ORIGIN ?? 'http://localhost:5173', 'http://localhost:3001', 'http://localhost:4173', 'http://localhost:5199']));
   const security = createSecurityMiddleware({ allowedOrigins });
 

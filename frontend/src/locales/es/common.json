@@ -1,5 +1,39 @@
 {
-  "auctions": {"tab":"Subastas","error":"No se pudieron cargar o actualizar las subastas.","currentBid":"Oferta más alta","awardDeadline":"Completa los términos finales antes de {{time}}","ends":"Finaliza {{time}}","provider":"Proveedor","detailTitle":"Detalles de la subasta","highest":"Oferta más alta","nextBid":"Oferta mínima siguiente","endsAt":"Fin de la subasta","reserve":"Precio de reserva","notSet":"Sin reserva","met":"Reserva alcanzada","notMet":"Reserva no alcanzada","bidAmount":"Tu oferta (INR)","placing":"Enviando oferta…","placeBid":"Ofertar","youWon":"Eres el ganador provisional.","winnerNext":"El ganador provisional está completando los términos finales.","completeWithin":"Ambas partes deben completar los términos finales en 24 horas. La reserva solo se confirma tras la aprobación mutua y la comprobación de capacidad.","continueTerms":"Continuar con términos finales","bidHistory":"Historial de ofertas","you":"tú","noBids":"Aún no hay ofertas.","noProviderAuctions":"Aún no tienes subastas.","noAuctions":"No hay subastas abiertas o recientes.","management":"Gestión de subastas","managementDescription":"Crea y gestiona subastas para materiales disponibles. Las ofertas bloquean las condiciones.","providerWorkspace":"Espacio del proveedor","create":"Crear subasta","materials":"Materiales","edit":"Editar subasta","material":"Pasaporte de material","chooseMaterial":"Elige un material","quantity":"Cantidad subastada (toneladas)","startsAt":"Hora de inicio","endsAt":"Hora de cierre","increment":"Oferta mínima / incremento (INR)","reserveOptional":"Precio de reserva (opcional, INR)","saving":"Guardando…","save":"Guardar subasta","close":"Cerrar","cancel":"Cancelar subasta","details":"Detalles de ofertas","viewNegotiation":"Ver negociación","negotiationContext":"Adjudicación de subasta · la oferta ganadora {{price}} inicia los términos finales. No aprueba términos ni crea una reserva.","pricePending":"oferta ganadora","viewAuction":"Ver subasta","adminTitle":"Inspección de subastas","adminReadOnly":"Registros de subastas de solo lectura. Los administradores no pueden cambiar ofertas ni resultados.","adminProvider":"Proveedor","adminWinner":"Ganador","adminNone":"—","adminPeriod":"Periodo de subasta","adminNegotiation":"Negociación","adminBooking":"Reserva","adminAward":"Adjudicación","adminEmpty":"No hay subastas."},
+  "onboarding": {
+    "metaTitle": "Configura tu espacio de trabajo | GreenLoop",
+    "metaDescription": "Elige tu rol y añade los datos de tu organización.",
+    "restoring": "Restaurando tu sesión…",
+    "backToSite": "Volver a GreenLoop",
+    "setup": "Configura tu espacio de trabajo",
+    "roleTitle": "Elige tu rol",
+    "roleDescription": "Cuéntale a GreenLoop cómo usarás la red de recuperación.",
+    "organizationTitle": "Datos de la organización",
+    "organizationDescription": "Opcional — completa tu perfil.",
+    "organizationName": "Nombre de la organización",
+    "organizationPlaceholder": "p. ej. Riverstone Aggregates",
+    "location": "Ubicación / Región",
+    "locationPlaceholder": "p. ej. Londres, Reino Unido",
+    "vat": "N.º de IVA / Empresa",
+    "optional": "Opcional",
+    "back": "Atrás",
+    "finish": "Finalizar configuración",
+    "saving": "Guardando…",
+    "roles": {
+      "provider": {
+        "title": "Proveedor de materiales",
+        "description": "Tengo materiales para recuperar."
+      },
+      "receiver": {
+        "title": "Receptor de materiales",
+        "description": "Necesito materiales para mi instalación."
+      },
+      "both": {
+        "title": "Ambos",
+        "description": "Suministro y recibo materiales."
+      }
+    }
+  },
+  "auctions": {"tab":"Subastas","error":"No se pudieron cargar o actualizar las subastas.","currentBid":"Oferta más alta","awardDeadline":"Completa los términos finales antes de {{time}}","ends":"Finaliza {{time}}","provider":"Proveedor","detailTitle":"Detalles de la subasta","highest":"Oferta más alta","nextBid":"Oferta mínima siguiente","reserve":"Precio de reserva","notSet":"Sin reserva","met":"Reserva alcanzada","notMet":"Reserva no alcanzada","bidAmount":"Tu oferta (INR)","placing":"Enviando oferta…","placeBid":"Ofertar","youWon":"Eres el ganador provisional.","winnerNext":"El ganador provisional está completando los términos finales.","completeWithin":"Ambas partes deben completar los términos finales en 24 horas. La reserva solo se confirma tras la aprobación mutua y la comprobación de capacidad.","continueTerms":"Continuar con términos finales","bidHistory":"Historial de ofertas","you":"tú","noBids":"Aún no hay ofertas.","noProviderAuctions":"Aún no tienes subastas.","noAuctions":"No hay subastas abiertas o recientes.","management":"Gestión de subastas","managementDescription":"Crea y gestiona subastas para materiales disponibles. Las ofertas bloquean las condiciones.","providerWorkspace":"Espacio del proveedor","create":"Crear subasta","materials":"Materiales","edit":"Editar subasta","material":"Pasaporte de material","chooseMaterial":"Elige un material","quantity":"Cantidad subastada (toneladas)","startsAt":"Hora de inicio","endsAt":"Hora de cierre","increment":"Oferta mínima / incremento (INR)","reserveOptional":"Precio de reserva (opcional, INR)","saving":"Guardando…","save":"Guardar subasta","close":"Cerrar","cancel":"Cancelar subasta","details":"Detalles de ofertas","viewNegotiation":"Ver negociación","negotiationContext":"Adjudicación de subasta · la oferta ganadora {{price}} inicia los términos finales. No aprueba términos ni crea una reserva.","pricePending":"oferta ganadora","viewAuction":"Ver subasta","adminTitle":"Inspección de subastas","adminReadOnly":"Registros de subastas de solo lectura. Los administradores no pueden cambiar ofertas ni resultados.","adminProvider":"Proveedor","adminWinner":"Ganador","adminNone":"—","adminPeriod":"Periodo de subasta","adminNegotiation":"Negociación","adminBooking":"Reserva","adminAward":"Adjudicación","adminEmpty":"No hay subastas."},
   "monetization": {"planBilling":"Plan y facturación","premiumPlan":"Plan Premium","freePlan":"Plan gratuito","activeThrough":"Activo hasta {{date}}","freeAvailable":"Las funciones gratuitas siguen disponibles.","premiumBadge":"Insignia Premium y mayor visibilidad del anuncio","advancedAnalytics":"Análisis operativos avanzados","impactReports":"Informes de impacto y ESG","monthlyPlan":"Suscripción de prueba: ₹999 por un mes, sin renovación automática","latestPayment":"Último pago","sandboxPending":"Pago de prueba pendiente · {{amount}}","verifiedServer":"El estado se actualiza tras la verificación de prueba del servidor. No es un pago real.","startingPayment":"Iniciando pago…","upgrade":"Mejorar a Premium · ₹999","renew":"Renovar Premium","loading":"Cargando estado Premium…","startError":"No se pudo iniciar el pago Premium.","sponsorActive":"Patrocinado mediante una campaña activa.","sponsorListing":"Patrocinar anuncio","days7":"7 días · ₹199","days14":"14 días · ₹398","days30":"30 días · ₹852,86","promote":"Promocionar anuncio","starting":"Iniciando…","feeStatus":"Estado de la tarifa","sandboxOnly":"Solo prueba. La activación requiere verificación del servidor.","sponsorshipError":"No se pudo iniciar el patrocinio.","premiumImpact":"Premium · Impacto y ESG","verifiedRecovery":"Recuperación verificada de materiales","verifiedData":"Datos operativos verificados","surveyedMaterial":"Material inspeccionado","acceptedRecovery":"Recuperación aceptada y verificada","verifiedLoads":"Cargas verificadas","acceptedShare":"aceptado","downloadReport":"Descargar informe de impacto (CSV)","advancedAvailable":"Los informes avanzados de impacto están disponibles con Premium. El análisis básico sigue disponible.","viewPlan":"Ver plan","loadingReport":"Cargando informe Premium…","verifiedTonnes":"Las toneladas informadas proceden de entregas verificadas. GreenLoop no estima ahorros de emisiones ni certificaciones.","adminTitle":"Monetización","adminDescription":"Inspección de beneficios de prueba e intentos de pago.","readOnly":"Vista de solo lectura. La gestión de beneficios está disponible para Super Admins.","findAccount":"Buscar cuenta","searchAccount":"Buscar correo o nombre","account":"Cuenta","chooseAccount":"Elegir usuario","action":"Acción","grant":"Conceder","extend":"Ampliar desde el vencimiento actual","revoke":"Revocar","durationDays":"Duración (días)","orSetExpiry":"O establecer fecha de vencimiento","reason":"Motivo","saving":"Guardando…","applyEntitlement":"Aplicar beneficio Premium","entitlements":"Beneficios","user":"Usuario","source":"Origen","status":"Estado","expires":"Vence","recentAttempts":"Intentos de pago recientes","payer":"Pagador","product":"Producto","target":"Destino","amount":"Importe","providerReference":"Referencia del proveedor","metric":"Métrica","value":"Valor","reportError":"No se pudieron cargar los datos avanzados de impacto.","participationFee":"Tarifa única de participación · ₹49","participationExplain":"Únete una vez a esta subasta y luego puja tantas veces como quieras.","joinAuction":"Unirse a la subasta · ₹49","retryJoin":"Reintentar pago de participación","auctionStatus":{"scheduled":"Programada","open":"Abierta","closed":"Cerrada","awarded":"Adjudicada","award_expired":"Adjudicación vencida","no_sale":"Sin venta","completed":"Completada","cancelled":"Cancelada","paid":"Pagado","pending":"Pendiente","failed":"Fallido","refunded":"Reembolsado"},"productTypes":{"premium_subscription":"Suscripción Premium","sponsored_listing":"Anuncio patrocinado","auction_hosting":"Publicación de subasta","auction_participation":"Participación en subasta"},"sourceTypes":{"purchase":"Compra","admin_grant":"Concesión administrativa"},"paymentStatus":{"refund_pending":"Reembolso pendiente","refunded":"Reembolsado","active":"Activo","revoked":"Revocado"},"auctionHostingFee":"Tarifa de publicación de subasta · ₹199","auctionUnpublished":"La subasta no se publica hasta que el servidor verifique el pago.","paymentPending":"Pago pendiente…","retryHosting":"Reintentar pago de publicación","notPublished":"La subasta no se publica hasta verificar la tarifa de ₹199."},
   "recordCrud": {
     "edit": "Editar",
@@ -62,7 +96,7 @@
   },
   "orderPayment": {
     "title": "Pago y desembolso",
-    "waiting": "El pago comienza tras confirmar la reserva y debe completarse antes del envío.",
+    "waiting": "El pago está disponible tras confirmar la reserva. El envío no requiere la confirmación del pago.",
     "reference": "Referencia del proveedor",
     "acceptedValue": "Valor del material aceptado",
     "commission": "Comisión de GreenLoop",
@@ -83,7 +117,6 @@
     "payoutStatus": { "held": "Retenido", "pending": "Pendiente", "settled": "Liquidado", "failed": "Fallido", "disputed": "En disputa", "not_eligible": "No aplicable" }
   },
   "orderTracking": {
-    "dispatchPaymentRequired": "Confirma el pago en los detalles del pedido antes del envío.",
     "title": "Estado de entrega",
     "booked": "Reservado",
     "pendingPickup": "Pendiente de recogida",

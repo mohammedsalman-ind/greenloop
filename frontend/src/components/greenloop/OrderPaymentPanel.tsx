@@ -14,7 +14,7 @@ export default function OrderPaymentPanel({ booking, workspace }: { booking: Boo
   const payment = dataset.payments?.find(item => item.bookingId === booking.id);
   const verification = dataset.verifications.find(item => item.bookingId === booking.id);
   const receiver = workspace === "receiver";
-  const canStart = receiver && booking.status === "confirmed" && booking.receiverAcceptedAt && !booking.loadRef && (!payment || payment.paymentStatus === "failed");
+  const canStart = receiver && booking.status === "confirmed" && booking.receiverAcceptedAt && (!payment || payment.paymentStatus === "failed");
   const canDispute = receiver && Boolean(booking.loadRef) && Boolean(payment && ["paid", "adjustment"].includes(payment.paymentStatus) && payment.payoutStatus !== "settled");
   const start = async () => { setBusy(true); try { await createPaymentAttemptAction(booking.id); } finally { setBusy(false); } };
   const dispute = async () => { setBusy(true); try { if (await disputePaymentAction(booking.id, reason)) setReason(""); } finally { setBusy(false); } };
