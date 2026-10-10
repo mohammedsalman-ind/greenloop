@@ -139,9 +139,36 @@ export interface TransactionContact {
   phone?: string;
 }
 
+export type FacilityResearchFindingStatus = "confirmed" | "listed" | "unclear" | "not_found";
+
+export interface FacilityResearchFinding {
+  status: FacilityResearchFindingStatus;
+  evidence: string[];
+  evidenceExcerpt?: string;
+  material?: string;
+  value?: string;
+  type?: string;
+  name?: string;
+  description?: string;
+  support?: "explicit" | "category" | "unclear";
+}
+
+export interface ManualFacilityDetails {
+  id: string;
+  updatedAt: string;
+  acceptedMaterials: string[];
+  contacts: { id: string; type: string; value: string }[];
+  location: string;
+  services: string[];
+}
+
 export interface ReceiverFacility {
   geo?: GeoPoint;
   distanceKnown?: boolean;
+  websiteUrl?: string;
+  researchHistory?: Record<string, unknown>[];
+  manualDetails?: ManualFacilityDetails;
+  manualDetailsHistory?: ManualFacilityDetails[];
   id: string;
   name: string;
   location: string;

@@ -73,6 +73,19 @@ export function createDatasetService({ datasetModel, userModel, negotiationModel
       dataset.receivers.push({ id: current.receiverId, name: current.organization || current.name || current.email, location: current.location || '', dailyIntakeT: 0, currentStockT: 0, acceptedTypes: [], distanceKm: 0, distanceKnown: false });
       datasetModel.assignOwner(current.receiverId, current.id);
     }
+    if (input.websiteUrl !== undefined) {
+      requireThat(current.receiverId, 'Enable the Receiver workspace before adding a facility website.', 400);
+      const facilityUrl = text(input.websiteUrl, 'website URL', 2048, true);
+      if (facilityUrl) {
+        let parsed;
+        try { parsed = new URL(facilityUrl); } catch { parsed = null; }
+        requireThat(parsed?.protocol === 'https:' && parsed.hostname && !parsed.username && !parsed.password, 'Enter a valid HTTPS facility website URL.');
+      }
+      const target = dataset.receivers.find(item => item.id === current.receiverId);
+      requireThat(target, 'Receiver facility not found.', 404);
+      if (facilityUrl) target.websiteUrl = facilityUrl;
+      else delete target.websiteUrl;
+    }
     if (current.receiverId) dataset.receivers = dataset.receivers.map(r => r.id === current.receiverId ? { ...r, name: current.organization || current.name || current.email, location: current.location || r.location } : r);
     datasetModel.save(dataset);
     userModel.updateProfile(current);

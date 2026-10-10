@@ -25,8 +25,8 @@ try {
     assert.match(html, /class="hero-wordmark">GREEN<span>LOOP<\/span>/, `${label}: greenloop-story hero`);
     assert.ok(!html.includes('id="market-search"'), `${label}: greenloop-story marketplace`);
     assert.match(html, /class="india-outline"/);
-    assert.match(html, /href="\/app" class="platform-button/);
-    assert.match(html, /platformUrl: "\/app"/);
+    assert.ok(!html.includes("ENTER PLATFORM"), `${label}: removed platform button`);
+    assert.ok(!html.includes('class="platform-button'), `${label}: removed platform button styling hook`);
     for (const section of [html.match(/<header\b[\s\S]*?<\/header>/)?.[0], html.match(/<section id="network"[\s\S]*?<\/section>/)?.[0]]) {
       assert.ok(section, `${label}: header and final chapter must exist`);
       assert.match(section, /href="\/sign-in">Sign in<\/a>/);
@@ -46,7 +46,7 @@ try {
       assert.equal(result.status, 200, `${label}: ${path}`);
       assert.match(await result.text(), /<div id="root"><\/div>/, `${label}: ${path} must retain the React app`);
     }
-    console.log(`PASS ${label}: 13 chapters, inline map, platform link, ${assets.size} local assets, HEAD, and auth/workspace routes.`);
+    console.log(`PASS ${label}: 13 chapters, inline map, account links, ${assets.size} local assets, HEAD, and auth/workspace routes.`);
   }
   const health = await fetch(`http://127.0.0.1:${backend.address().port}/api/health`);
   assert.deepEqual(await health.json(), { status: 'ok' });

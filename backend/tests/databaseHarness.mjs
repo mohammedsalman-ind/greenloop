@@ -7,6 +7,8 @@ export async function embeddedDatabase() {
   const { PGlite } = await import('@electric-sql/pglite');
   const database = new PGlite();
   await database.exec(readFileSync(new URL('../../supabase/migrations/001_initial_schema.sql', import.meta.url), 'utf8'));
+  await database.exec(readFileSync(new URL('../../supabase/migrations/002_facility_website.sql', import.meta.url), 'utf8'));
+  await database.exec(readFileSync(new URL('../../supabase/migrations/003_facility_research_history.sql', import.meta.url), 'utf8'));
   // PGlite has one embedded connection. A lease serializes transactions, while
   // production pg pools use PostgreSQL's cross-process advisory transaction lock.
   let queue = Promise.resolve();
