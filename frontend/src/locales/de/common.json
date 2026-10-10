@@ -300,5 +300,6 @@
     "failed": "Das Projekt konnte nicht erstellt werden. Bitte erneut versuchen.",
     "create": "Projekt erstellen",
     "creating": "Projekt wird erstellt…"
-  }
+  },
+  "acceptedOrders": {"awaitingSchedule":"Termin ausstehend","receiverHint":"Angebot angenommen. Wähle eine Annahmekapazität, um die Buchung zu bestätigen.","providerHint":"Angebot angenommen. Der Empfänger plant einen Annahmetermin.","chooseSlot":"Annahmetermin","schedule":"Buchung bestätigen","receivingPlan":"Annahme planen","failed":"Die Buchung konnte nicht bestätigt werden. Prüfe die aktuelle Kapazität und versuche es erneut."}
 }

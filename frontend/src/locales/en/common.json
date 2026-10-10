@@ -357,5 +357,6 @@
     "failed": "Could not create the project. Please try again.",
     "create": "Create project",
     "creating": "Creating project…"
-  }
+  },
+  "acceptedOrders": {"awaitingSchedule":"Awaiting schedule","receiverHint":"Offer accepted. Choose receiving capacity to confirm the booking.","providerHint":"Offer accepted. The receiver is arranging a receiving slot.","chooseSlot":"Receiving slot","schedule":"Confirm booking","receivingPlan":"Set receiving plan","failed":"Could not confirm the booking. Check current capacity and try again."}
 }

@@ -35,6 +35,9 @@ import { createAuctionsController } from './controllers/auctions.controller.mjs'
 import { createMonetizationModel } from './models/monetization.model.mjs';
 import { createMonetizationService } from './services/monetization.service.mjs';
 import { createMonetizationController } from './controllers/monetization.controller.mjs';
+import { createFacilityResearchController } from './controllers/facility-research.controller.mjs';
+import { createFacilityResearchService } from './services/facility-research.service.mjs';
+import { createFacilityPublicResearchService } from './services/facility-public-research.service.mjs';
 import { createRoutes } from './routes/index.mjs';
 import { openPostgres } from './database/postgres.mjs';
 import { bufferedResponse } from './controllers/bufferedResponse.mjs';
@@ -114,7 +117,9 @@ export function createBackend(options = {}) {
   const adminController = createAdminController(adminService);
   const auctionsController = createAuctionsController(auctionService);
   const systemController = createSystemController();
-  const routes = createRoutes({ authController, datasetController, actionsController, uploadsController, paymentsController, adminController, auctionsController, monetizationController: createMonetizationController(monetizationService), requireAuth, systemController });
+  const facilityResearchService = options.facilityResearchService ?? Object.assign(
+    createFacilityResearchService({ datasetModel }), createFacilityPublicResearchService({ datasetModel }));
+  const routes = createRoutes({ authController, datasetController, actionsController, uploadsController, paymentsController, adminController, auctionsController, monetizationController: createMonetizationController(monetizationService), facilityResearchController: createFacilityResearchController(facilityResearchService), requireAuth, systemController });
   const allowedOrigins = new Set(options.origins ?? (production ? [process.env.PUBLIC_ORIGIN] : [process.env.PUBLIC_ORIGIN ?? 'http://localhost:5173', 'http://localhost:3001', 'http://localhost:4173', 'http://localhost:5199']));
   const security = createSecurityMiddleware({ allowedOrigins });
 

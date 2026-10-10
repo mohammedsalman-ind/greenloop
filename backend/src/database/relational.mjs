@@ -2,7 +2,7 @@
 // estimate ranges and ranked matching explanations), never an entity/dataset blob.
 export const entities = [
   ['projects', 'projects', 'name location status surveyedAt lastActivityAt geo', true],
-  ['receivers', 'receiver_facilities', 'name location dailyIntakeT currentStockT acceptedTypes distanceKm distanceKnown geo', true],
+  ['receivers', 'receiver_facilities', 'name location websiteUrl researchHistory manualDetails manualDetailsHistory dailyIntakeT currentStockT acceptedTypes distanceKm distanceKnown geo', true],
   ['materials', 'material_passports', 'projectId type quantityT originalUnit originalQuantity conversionFactor quantityRangeT condition grade surveyedAt status confidence surveyNotes pricePerT availableFrom geo archivedAt', true],
   ['slots', 'receiver_capacity', 'receiverId date materialType capacityT'],
   ['demands', 'receiver_demands', 'receiverId materialType requiredT period location status createdAt notes budgetPerT geo targetProviderId targetProviderName targetMaterialId archivedAt', true],
@@ -14,7 +14,7 @@ export const entities = [
   ['supportRequests', 'support_requests', 'email subject message submittedAt', true],
 ].map(([key, table, fields, owned]) => ({ key, table, fields: fields.split(' '), owned: Boolean(owned) }));
 
-export const jsonFields = new Set(['geo', 'quantityRangeT', 'candidates', 'actor']);
+export const jsonFields = new Set(['geo', 'quantityRangeT', 'candidates', 'actor', 'researchHistory', 'manualDetails', 'manualDetailsHistory']);
 export const profileFields = 'name organization location vat phone workspaces activeWorkspace receiverId'.split(' ');
 export const authTables = {
   users: ['id', 'email', 'password', ...profileFields],

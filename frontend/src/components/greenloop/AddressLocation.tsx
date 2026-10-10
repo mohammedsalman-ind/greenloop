@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { GeoPoint } from "@shared/domain/types";
 import { LocationMap } from "@/components/greenloop/LocationMap";
+import { cn } from "@/utils";
 
 type Suggestion = { label: string; geo?: GeoPoint; source: "greenloop" | "osm" };
 
@@ -23,6 +24,7 @@ export default function AddressLocation({
   required = false,
   showMapPreview = true,
   className = "",
+  inputClassName = "",
 }: {
   address: string;
   onAddressChange: (value: string) => void;
@@ -35,6 +37,7 @@ export default function AddressLocation({
   required?: boolean;
   showMapPreview?: boolean;
   className?: string;
+  inputClassName?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [lookup, setLookup] = useState<{ query: string; results: Suggestion[]; unavailable: boolean }>({ query: "", results: [], unavailable: false });
@@ -95,7 +98,7 @@ export default function AddressLocation({
       <label className="block text-sm font-medium text-steel-700 dark:text-gray-300" htmlFor="address-location-input">
         {label}
         <span className="relative mt-1 block">
-          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-steel-400"><circle cx="10.8" cy="10.8" r="6.8" /><path d="m16 16 4.2 4.2" /></svg>
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" className="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-steel-400"><circle cx="10.8" cy="10.8" r="6.8" /><path d="m16 16 4.2 4.2" /></svg>
           <input
             id="address-location-input"
             type="text"
@@ -108,7 +111,7 @@ export default function AddressLocation({
             }}
             onFocus={() => setOpen(true)}
             placeholder={placeholder}
-            className="block h-10 w-full rounded-sm border-steel-300 bg-white pl-9 pr-3 text-sm shadow-sm outline-none focus:border-loop-500 focus:ring-loop-500 dark:border-steel-700 dark:bg-black dark:text-white"
+            className={cn("block h-10 w-full rounded-sm border-steel-300 bg-white ps-9 pe-3 text-sm shadow-sm outline-none focus:border-loop-500 focus:ring-loop-500 dark:border-steel-700 dark:bg-black dark:text-white", inputClassName)}
           />
         </span>
       </label>

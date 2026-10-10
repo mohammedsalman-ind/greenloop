@@ -7,6 +7,7 @@ import MatchDetailsPanel from "@/components/greenloop/MatchDetailsPanel";
 import RecordActions from "@/components/greenloop/RecordActions";
 import StatusBadge from "@/components/greenloop/StatusBadge";
 import Button from "@/components/ui/button/Button";
+import { Modal } from "@/components/ui/modal";
 import { ambientVideo, materialMediaFor } from "@/config/appMedia";
 import { useAuth } from "@/context/AuthContext.helpers";
 import { contextualMatch } from "@shared/domain/capacity";
@@ -32,6 +33,7 @@ const TYPE_LABEL: Record<string, string> = {
 
 const CUSTOM_TYPE = "__custom__";
 const normalizeCustomType = (value: string) => value.trim().toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+const requestInputClass = "mt-1.5 block h-10 w-full min-w-0 rounded-lg border border-steel-200 bg-white px-3 font-inter text-sm text-ink-900 shadow-sm outline-none transition focus:border-loop-500 focus:ring-2 focus:ring-loop-500/15 dark:border-steel-700 dark:bg-ink-900 dark:text-white";
 
 export default function Demand() {
   const { t } = useTranslation();
@@ -204,32 +206,21 @@ export default function Demand() {
       {sentMessage && <p role="status" className="mx-auto mb-4 mt-4 max-w-[1120px] border-l-4 border-loop-500 bg-loop-50 px-4 py-3 text-sm font-medium text-loop-800 dark:bg-loop-500/10 dark:text-loop-200 sm:mx-6 lg:mx-auto">{sentMessage}</p>}
 
       {/* Add Demand Form */}
-      <AnimatePresence>
-      {isAdding && (
-        <>
-        <motion.button type="button" aria-label="Close request form" onClick={() => setIsAdding(false)} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[80] cursor-default bg-[#101a13]/45 backdrop-blur-[2px]" />
-        <motion.div
-          initial={{ x: "100%" }}
-          animate={{ x: 0 }}
-          exit={{ x: "100%" }}
-          transition={{ type: "spring", damping: 32, stiffness: 300 }}
-          className="fixed inset-y-0 right-0 z-[81] w-full overflow-y-auto border-l border-[#e8e7df] bg-[#fffefa] shadow-2xl dark:border-steel-800 dark:bg-[#111b14] sm:max-w-[620px]"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="request-form-title"
-        >
-          <div id="request-form" className="min-h-full p-5 sm:p-7">
-            <div className="mb-5 flex items-center justify-between gap-3 border-b border-[#e7e8e1] pb-4 dark:border-steel-800">
-              <div><p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#6c9274]">New request</p><h2 id="request-form-title" className="mt-1 font-archivo text-xl font-bold text-[#24352a] dark:text-white">Tell providers what you need</h2></div>
-              <button type="button" aria-label="Close request form" onClick={() => setIsAdding(false)} className="flex size-9 shrink-0 items-center justify-center rounded-full text-xl text-[#667268] transition hover:bg-[#edf2ec] dark:hover:bg-white/10">×</button>
+      <Modal isOpen={isAdding} onClose={() => setIsAdding(false)} showCloseButton={false} className="mx-4 max-h-[90dvh] max-w-xl overflow-y-auto p-5 font-inter shadow-2xl sm:p-6">
+          <div id="request-form" role="dialog" aria-modal="true" aria-labelledby="request-form-title">
+            <div className="mb-4 flex items-start justify-between gap-3 border-b border-steel-200 pb-4 dark:border-steel-800">
+              <div><p className="text-xs font-semibold text-loop-700 dark:text-loop-300">New request</p><h2 id="request-form-title" className="mt-1 font-archivo text-xl font-bold tracking-tight text-ink-900 dark:text-white">Tell providers what you need</h2></div>
+              <button type="button" aria-label="Close request form" onClick={() => setIsAdding(false)} className="flex size-9 shrink-0 items-center justify-center rounded-lg text-xl text-steel-500 transition hover:bg-steel-100 focus-visible:outline-2 focus-visible:outline-loop-500 dark:text-steel-400 dark:hover:bg-steel-800">×</button>
             </div>
-            <form onSubmit={handleAddDemand} className="mt-6 grid gap-card sm:grid-cols-2">
+            <form onSubmit={handleAddDemand} className="grid gap-x-4 gap-y-4 sm:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-steel-700 dark:text-gray-300">Material Type</label>
+                <label htmlFor="request-material" className="block text-sm font-medium text-steel-700 dark:text-gray-300">Material Type</label>
                 <select
+                  id="request-material"
+                  autoFocus
                   value={type}
                   onChange={(e) => setType(e.target.value as MaterialTypeKey)}
-                  className="mt-1 block w-full rounded-sm border-steel-300 shadow-sm focus:border-loop-500 focus:ring-loop-500 sm:text-sm dark:border-steel-700 dark:bg-black dark:text-white"
+                  className={requestInputClass}
                 >
                   {Object.entries(TYPE_LABEL).map(([key, label]) => (
                     <option key={key} value={key}>{label}</option>
@@ -244,14 +235,15 @@ export default function Demand() {
                     placeholder="Material name, e.g. roof tiles"
                     aria-label="Custom material name"
                     required
-                    className="mt-2 block w-full rounded-sm border-steel-300 shadow-sm focus:border-loop-500 focus:ring-loop-500 sm:text-sm dark:border-steel-700 dark:bg-black dark:text-white"
+                    className={requestInputClass}
                   />
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-steel-700 dark:text-gray-300">Required Quantity (t)</label>
+                <label htmlFor="request-quantity" className="block text-sm font-medium text-steel-700 dark:text-gray-300">Required Quantity (t)</label>
                 <input
+                  id="request-quantity"
                   type="number"
                   value={requiredT}
                   onChange={(e) => setRequiredT(e.target.value)}
@@ -259,20 +251,26 @@ export default function Demand() {
                   required
                   min="0.1"
                   step="0.1"
-                  className="mt-1 block w-full rounded-sm border-steel-300 shadow-sm focus:border-loop-500 focus:ring-loop-500 sm:text-sm dark:border-steel-700 dark:bg-black dark:text-white"
+                  className={requestInputClass}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-steel-700 dark:text-gray-300">Needed By</label>
+                <label htmlFor="request-date" className="block text-sm font-medium text-steel-700 dark:text-gray-300">Needed By</label>
                 <input
+                  id="request-date"
                   type="date"
                   value={period}
                   onChange={(e) => setPeriod(e.target.value)}
                   placeholder="e.g. Q4 2026, Oct 2026"
                   required
-                  className="mt-1 block w-full rounded-sm border-steel-300 shadow-sm focus:border-loop-500 focus:ring-loop-500 sm:text-sm dark:border-steel-700 dark:bg-black dark:text-white"
+                  className={requestInputClass}
                 />
+              </div>
+
+              <div>
+                <label htmlFor="request-budget" className="block text-sm font-medium text-steel-700 dark:text-gray-300">Budget per tonne (₹, optional)</label>
+                <input id="request-budget" type="number" min="0" step="1" value={budgetPerT} onChange={(event) => setBudgetPerT(event.target.value)} className={requestInputClass} />
               </div>
 
               <div className="sm:col-span-2">
@@ -285,37 +283,31 @@ export default function Demand() {
                   onGeoChange={setGeo}
                   sources={addressSources}
                   placeholder="Search receiving address…"
+                  inputClassName="rounded-lg border border-steel-200 ps-9 pe-3 focus:ring-2 focus:ring-loop-500/15 dark:bg-ink-900"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-steel-700 dark:text-gray-300">Budget per tonne (₹, optional)</label>
-                <input type="number" min="0" step="1" value={budgetPerT} onChange={(event) => setBudgetPerT(event.target.value)} className="mt-1 block w-full rounded-sm border-steel-300 shadow-sm focus:border-loop-500 focus:ring-loop-500 sm:text-sm dark:border-steel-700 dark:bg-black dark:text-white" />
-              </div>
-
               <div className="sm:col-span-2">
-                <label className="block text-sm font-medium text-steel-700 dark:text-gray-300">Notes (Optional)</label>
+                <label htmlFor="request-notes" className="block text-sm font-medium text-steel-700 dark:text-gray-300">Notes (Optional)</label>
                 <input
+                  id="request-notes"
                   type="text"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="e.g. Specific grade requirements"
-                  className="mt-1 block w-full rounded-sm border-steel-300 shadow-sm focus:border-loop-500 focus:ring-loop-500 sm:text-sm dark:border-steel-700 dark:bg-black dark:text-white"
+                  className={requestInputClass}
                 />
               </div>
 
               {error && <p role="alert" className="text-sm text-error-500 sm:col-span-2">{error}</p>}
-              <div className="flex gap-4 sm:col-span-2">
-                <Button size="md" type="submit">Send request</Button>
-                <Button size="md" variant="outline" type="button" onClick={handleSaveDemandDraft}>Save Draft</Button>
-                <Button size="md" variant="outline" type="button" onClick={() => { setIsAdding(false); setRequiredT(""); setPeriod(""); setBudgetPerT(""); setNotes(""); setError(""); }}>Discard</Button>
+              <div className="flex flex-wrap gap-2 border-t border-steel-200 pt-4 sm:col-span-2 dark:border-steel-800">
+                <Button size="sm" className="rounded-lg" type="submit">Send request</Button>
+                <Button size="sm" className="rounded-lg" variant="outline" type="button" onClick={handleSaveDemandDraft}>Save Draft</Button>
+                <Button size="sm" className="rounded-lg" variant="outline" type="button" onClick={() => { setIsAdding(false); setRequiredT(""); setPeriod(""); setBudgetPerT(""); setNotes(""); setError(""); }}>Discard</Button>
               </div>
             </form>
           </div>
-        </motion.div>
-        </>
-      )}
-      </AnimatePresence>
+      </Modal>
 
       {/* Demand List */}
       {receiverDemands.length === 0 ? (

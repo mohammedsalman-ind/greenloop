@@ -10,8 +10,10 @@ for (const name of ['index.html', 'app.js', 'styles.css']) {
   let text = (await readFile(new URL(name, source), 'utf8')).replaceAll('./assets/', '/landing/assets/');
   if (name === 'index.html') {
     text = text.replaceAll('./styles.css', '/landing/styles.css').replaceAll('./app.js', '/landing/app.js')
-      .replace('<script src="/landing/app.js" defer></script>', '<script>window.GREENLOOP_CONFIG = { platformUrl: "/app" };</script><script src="/landing/app.js" defer></script>')
-      .replace('<a href="#marketplace" data-go="6" class="platform-button', `<nav class="header-auth" aria-label="Account">${accountLinks}</nav><a href="/app" class="platform-button`)
+      .replace(/<a href="#marketplace" data-go="6" class="platform-button[^>]*>[\s\S]*?<\/a>/, `<nav class="header-auth" aria-label="Account">${accountLinks}</nav>`)
+      .replace(/<header\b[^>]*>[\s\S]*?<\/header>/, header => header.includes('class="header-auth"')
+        ? header
+        : header.replace('</header>', `<nav class="header-auth" aria-label="Account">${accountLinks}</nav></header>`))
       .replace(/(<section id="network"[\s\S]*?<div class="scene-copy[^>]*>)([\s\S]*?)(<\/div>)/, `$1$2<nav class="chapter-auth" aria-label="Join GreenLoop">${accountLinks}</nav>$3`)
       .replace(/<a href="\.\/greenloop-source\.zip"[^>]*>[\s\S]*?<\/a>/, '');
   }
