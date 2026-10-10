@@ -23,7 +23,7 @@ export default function NegotiationPage() {
   const [notice, setNotice] = useState("");
   const compatibleSlots = useMemo(() => dataset.slots.filter(item => item.receiverId === demand?.receiverId && item.materialType === material?.type && item.date >= new Date().toISOString().slice(0, 10) && demand && slotMatchesDemandPeriod(item, demand.period)).sort((a, b) => a.date.localeCompare(b.date)), [dataset.slots, demand, material]);
 
-  if (!offer || !demand || !material || !conversation) return <main className="mx-auto max-w-3xl p-8"><PageMeta title={`${t("negotiation.title")} | GreenLoop`} description={t("negotiation.subtitle")} /><h1 className="font-archivo text-2xl font-bold">{t("negotiation.unavailable")}</h1><Link className="mt-4 inline-block underline" to="/app/market-demand">{t("negotiation.back")}</Link></main>;
+  if (!offer || !demand || !material || !conversation) return <main className="mx-auto max-w-3xl p-8"><PageMeta title={`${t("negotiation.title")} | GreenLoop`} description={t("negotiation.subtitle")} /><h1 className="font-archivo text-2xl font-bold">{t("negotiation.unavailable")}</h1><Link className="mt-4 inline-block underline" to="/app/negotiations">{t("negotiationInbox.back")}</Link></main>;
 
   const canPropose = offer.status === "pending" && (isProvider || user?.activeWorkspace === "receiver");
   const approvedByMe = isProvider ? Boolean(proposal?.providerApprovedAt) : Boolean(proposal?.receiverApprovedAt);
@@ -50,7 +50,7 @@ export default function NegotiationPage() {
 
   return <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
     <PageMeta title={`${t("negotiation.title")} | GreenLoop`} description={t("negotiation.subtitle")} />
-    <Link to={isProvider ? "/app/market-demand" : "/app/receiver/demand"} className="text-sm text-steel-600 hover:underline dark:text-gray-300">← {t("negotiation.back")}</Link>
+    <Link to="/app/negotiations" className="text-sm text-steel-600 hover:underline dark:text-gray-300">← {t("negotiationInbox.back")}</Link>
     <header className="mt-5 flex flex-wrap items-start justify-between gap-3"><div><p className="eyebrow-label text-steel-500">{t("negotiation.offerSummary")}</p><h1 className="mt-1 font-archivo text-3xl font-bold text-ink-900 dark:text-white">{materialTypeLabel(material.type)} · {offer.offeredQuantityT.toFixed(1)} t</h1><p className="mt-1 text-sm text-steel-600 dark:text-gray-300">{t("negotiation.receiver")}: {demand.location} · {t("negotiation.neededBy")}: {formatDate(demand.period)}</p></div><span className="rounded-full border border-steel-300 px-3 py-1 text-sm font-semibold dark:border-steel-700">{statusLabel}</span></header>
     {offer.auctionId && <p className="mt-4 rounded-lg border border-loop-300 bg-loop-50 px-4 py-3 text-sm text-loop-900 dark:border-loop-800 dark:bg-loop-950 dark:text-loop-100">{t("auctions.negotiationContext", { price: offer.pricePerT ? formatINRPerT(offer.pricePerT) : t("auctions.pricePending") })} <Link to={isProvider ? "/app/auctions" : "/app/receiver/providers"} className="ms-1 font-semibold underline">{t("auctions.viewAuction")}</Link></p>}
 

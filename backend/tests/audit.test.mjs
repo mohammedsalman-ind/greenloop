@@ -137,7 +137,10 @@ test('audit: endpoint contracts, malformed inputs, stale offers and rescheduling
     assert.equal(profile.token, undefined);
     // Built SPA supports direct navigation and refresh on every registered route.
     const routes = ['/', '/sign-in', '/sign-up', '/forgot-password', '/onboarding', '/app', '/app/explore', '/app/dashboard', '/app/projects', '/app/materials/new', `/app/materials/${material.id}`, '/app/materials', '/app/receivers', '/app/allocations', '/app/bookings', '/app/deliveries', '/app/verification', '/app/reports', '/app/market-demand', '/app/profile', '/app/support', '/app/settings', '/app/audit-trail', '/app/receiver/overview', '/app/receiver/demand', '/app/receiver/capacity', '/app/receiver/incoming-requests', '/app/receiver/deliveries', '/app/receiver/verification'];
-    for (const path of routes) assert.match(await anonymous(path), /<div id="root"><\/div>/);
+    for (const path of routes) {
+      const html = await anonymous(path);
+      assert.match(html, path === '/' ? /hero-wordmark/ : /<div id="root"><\/div>/);
+    }
   } finally {
     await new Promise(resolve => server.close(resolve));
     assert.equal(dirname(resolve(directory)), resolve(tmpdir()));

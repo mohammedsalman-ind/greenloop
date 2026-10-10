@@ -34,6 +34,18 @@ test('provider and receiver share private chat before and after acceptance witho
     const offer = offered.dataset.offers.find(item => item.demandId === demand.id);
     const chat = (request, body, status = 200) => action(request, 'sendNegotiationMessageAction', [offer.id, body], status);
     await chat(provider, 'Could we arrange delivery at 9am?');
+    const received = (await receiver('/dataset')).dataset;
+    assert.ok(received.offers.some(item => item.id === offer.id));
+    assert.ok(received.demands.some(item => item.id === demand.id));
+    assert.ok(received.materials.some(item => item.id === material.id));
+    assert.equal(received.negotiations.find(item => item.offerId === offer.id).messages[0].body, 'Could we arrange delivery at 9am?');
+    const notification = received.events.find(item => item.kind === 'negotiation.message_sent' && item.subjectIds[0] === offer.id);
+    assert.ok(notification);
+    assert.equal(notification.actor.kind, 'contractor');
+    assert.ok(!received.readEventIds.includes(notification.id));
+    await action(receiver, 'markNotificationsReadAction', [[notification.id]]);
+    assert.ok((await receiver('/dataset')).dataset.readEventIds.includes(notification.id));
+    assert.ok(!(await provider('/dataset')).dataset.readEventIds.includes(notification.id));
     await chat(receiver, 'Yes, please confirm the transport price.');
     await chat(outsider, 'Uninvited message', 403);
     await chat(provider, '   ', 400);

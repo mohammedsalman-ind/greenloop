@@ -30,7 +30,9 @@ export default function NotificationDropdown() {
   const items: ActivityItem[] = [...dataset.events].reverse().map((event) => {
     const [firstId = "", secondId = ""] = event.subjectIds;
     const activeReceiver = user?.activeWorkspace === "receiver";
-    const href = event.kind.startsWith("demand.")
+    const href = event.kind.startsWith("negotiation.")
+      ? `/app/negotiations/${encodeURIComponent(firstId)}`
+      : event.kind.startsWith("demand.")
       ? activeReceiver ? `/app/receiver/demand?demand=${encodeURIComponent(firstId)}` : `/app/market-demand?demand=${encodeURIComponent(firstId)}`
       : event.kind.startsWith("offer.")
         ? activeReceiver ? `/app/receiver/demand?demand=${encodeURIComponent(secondId)}` : `/app/market-demand?demand=${encodeURIComponent(secondId)}`

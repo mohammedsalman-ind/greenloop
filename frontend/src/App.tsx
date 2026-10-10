@@ -22,6 +22,7 @@ const Explore = lazy(() => import("./pages/app/Explore"));
 const MarketDemand = lazy(() => import("./pages/app/MarketDemand"));
 const Auctions = lazy(() => import("./pages/app/Auctions"));
 const NegotiationPage = lazy(() => import("./pages/app/NegotiationPage"));
+const NegotiationInbox = lazy(() => import("./pages/app/NegotiationInbox"));
 const Profile = lazy(() => import("./pages/app/Profile"));
 const Support = lazy(() => import("./pages/app/Support"));
 const Settings = lazy(() => import("./pages/app/Settings"));
@@ -125,6 +126,7 @@ export default function App() {
                   <Route path="/app/reports" element={<Navigate to="/app/dashboard" replace />} />
                   <Route path="/app/market-demand" element={<MarketDemand />} />
                   <Route path="/app/auctions" element={<Auctions />} />
+                  <Route path="/app/negotiations" element={<NegotiationInbox />} />
                   <Route path="/app/negotiations/:offerId" element={<NegotiationPage />} />
                   <Route path="/app/profile" element={<Profile />} />
                   <Route path="/app/support" element={<Support />} />

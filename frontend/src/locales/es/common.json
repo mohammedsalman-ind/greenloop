@@ -184,6 +184,7 @@
       "tools": "Herramientas"
     },
     "items": {
+      "negotiationChat": "Chat de negociación",
       "explore": "Inicio",
       "dashboard": "Panel",
       "projects": "Proyectos",
@@ -309,5 +310,13 @@
     "closed": "Esta conversación está cerrada. Puedes leer los mensajes anteriores.",
     "accept": "Aceptar oferta",
     "accepted": "Oferta aceptada."
+  },
+  "negotiationInbox": {
+    "subtitle": "Mensajes y negociaciones con tus proveedores o receptores.",
+    "empty": "Todavía no hay conversaciones. Aparecen aquí al enviar una oferta para una solicitud.",
+    "viewOffers": "Ver ofertas",
+    "unread": "{{count}} sin leer",
+    "openConversation": "Abrir chat y negociar",
+    "back": "Volver a los chats"
   }
 }

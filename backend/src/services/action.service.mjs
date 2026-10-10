@@ -228,7 +228,16 @@ export function createActionService({ datasetModel, datasetService, userModel, u
           }
           case 'acceptOfferAction': {
             const item = offer(args[0]);
-            result = engine.acceptOfferAction(item.id);
+            const demand = dataset.demands.find(candidate => candidate.id === item.demandId);
+            const material = dataset.materials.find(candidate => candidate.id === item.passportId && !candidate.archivedAt);
+            requireThat(demand && material && !['DRAFT', 'PAUSED', 'CANCELLED'].includes(demand.status), 'This offer is no longer available.', 409);
+            const committedT = dataset.bookings.filter(booking => booking.materialId === material.id && booking.status !== 'cancelled').reduce((sum, booking) => sum + booking.tonnesT, 0);
+            const coveredT = dataset.bookings.filter(booking => booking.demandId === demand.id && booking.status !== 'cancelled').reduce((sum, booking) => sum + booking.tonnesT, 0);
+            requireThat(item.offeredQuantityT <= material.quantityT - committedT - (auctionService?.reservedT(material.id) ?? 0) && item.offeredQuantityT <= demand.requiredT - coveredT, 'The material or requested quantity is no longer available.', 409);
+            const plannedSlots = dataset.slots.filter(slot => slot.receiverId === demand.receiverId && slot.materialType === material.type);
+            const slot = plannedSlots.filter(slot => slot.date >= new Date().toISOString().slice(0, 10) && slotMatchesDemandPeriod(slot, demand.period) && (!material.availableFrom || slot.date >= material.availableFrom) && availableT(slot, dataset.bookings) >= item.offeredQuantityT).sort((a, b) => a.date.localeCompare(b.date))[0];
+            requireThat(!plannedSlots.length || slot, 'Choose receiving capacity that can accommodate this offer within the request period.', 409);
+            result = engine.acceptOfferAction(item.id, slot?.id);
             nextOverride = engine.getDataset();
             requireThat(result, 'This offer could not be accepted.', 409);
             break;

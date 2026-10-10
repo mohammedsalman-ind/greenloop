@@ -206,6 +206,7 @@
       "pro": "pro"
     },
     "items": {
+      "negotiationChat": "Negotiation chat",
       "explore": "Home",
       "dashboard": "Dashboard",
       "projects": "Projects",
@@ -366,5 +367,13 @@
     "closed": "This conversation is closed. You can still read previous messages.",
     "accept": "Accept offer",
     "accepted": "Offer accepted."
+  },
+  "negotiationInbox": {
+    "subtitle": "Messages and negotiations with your providers or receivers.",
+    "empty": "No conversations yet. Chats appear here when an offer is sent for a request.",
+    "viewOffers": "View offers",
+    "unread": "{{count}} unread",
+    "openConversation": "Open chat and negotiate",
+    "back": "Back to chats"
   }
 }

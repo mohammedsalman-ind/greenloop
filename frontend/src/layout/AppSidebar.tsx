@@ -41,6 +41,7 @@ const providerNavItems: NavItem[] = [
   { icon: <GridIcon fontSize={24} />, name: "Home", key: "explore", path: "/app/explore" },
   { icon: <BoxMoving fontSize={24} />, name: "Inventory", key: "materials", path: "/app/materials" },
   { icon: <ListIcon fontSize={24} />, name: "Requests", key: "marketDemand", path: "/app/market-demand" },
+  { icon: <ListIcon fontSize={24} />, name: "Negotiation chat", key: "negotiationChat", path: "/app/negotiations" },
   { icon: <BoxMoving fontSize={24} />, name: "My Orders", key: "bookings-deliveries", path: "/app/bookings-deliveries" },
   { icon: <CheckCircleIcon fontSize={24} />, name: "Verification", key: "verification", path: "/app/verification" },
 ];
@@ -55,6 +56,7 @@ const receiverNavItems: NavItem[] = [
   { icon: <GridIcon fontSize={24} />, name: "Home", key: "explore", path: "/app/receiver/overview" },
   { icon: <BoxTapped fontSize={24} />, name: "Requests", key: "receiverDemand", path: "/app/receiver/demand" },
   { icon: <BoxIconLine fontSize={24} />, name: "Providers", key: "providers", path: "/app/receiver/providers" },
+  { icon: <ListIcon fontSize={24} />, name: "Negotiation chat", key: "negotiationChat", path: "/app/negotiations" },
   { icon: <BoxMoving fontSize={24} />, name: "My Orders", key: "bookings-deliveries", path: "/app/bookings-deliveries" },
   { icon: <CheckCircleIcon fontSize={24} />, name: "Verification", key: "verification", path: "/app/receiver/verification" },
 ];

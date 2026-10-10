@@ -38,7 +38,7 @@ export function flatten(snapshot) {
   tables.organizations = snapshot.users.map(user => ({ id: user.id, name: JSON.parse(user.profile).organization || JSON.parse(user.profile).name || user.email }));
   tables.user_organizations = snapshot.users.map(user => ({ user_id: user.id, organization_id: user.id }));
   for (const { key, table, fields, owned } of entities) {
-    tables[table] = snapshot.dataset[key].map((item, position) => ({ id: item.id, position, ...Object.fromEntries(fields.map(field => [field, item[field] ?? null])), ...(owned ? { organization_id: snapshot.owners[item.id] } : {}) }));
+    tables[table] = snapshot.dataset[key].map((item, position) => ({ id: item.id, position, ...Object.fromEntries(fields.map(field => [field, item[field] ?? (['researchHistory', 'manualDetailsHistory'].includes(field) ? [] : null)])), ...(owned ? { organization_id: snapshot.owners[item.id] } : {}) }));
   }
   tables.material_evidence = [];
   for (const key of ['materials', 'verifications']) {

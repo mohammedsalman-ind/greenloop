@@ -14,15 +14,23 @@ interface Props {
 
 export default function NegotiationChat({ offerId, messages, currentRole, canChat }: Props) {
   const { t, i18n } = useTranslation();
-  const { sendNegotiationMessageAction } = useGreenLoopStore();
+  const { dataset, sendNegotiationMessageAction, markNotificationsReadAction } = useGreenLoopStore();
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [failed, setFailed] = useState(false);
   const sendingRef = useRef(false);
+  const markingRead = useRef(false);
   const log = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (log.current) log.current.scrollTop = log.current.scrollHeight;
   }, [messages.length]);
+  useEffect(() => {
+    const readIds = new Set(dataset.readEventIds ?? []);
+    const unreadIds = dataset.events.filter(event => event.kind === "negotiation.message_sent" && event.subjectIds[0] === offerId && event.actor.kind === (currentRole === "receiver" ? "contractor" : "receiver") && !readIds.has(event.id)).map(event => event.id).slice(0, 1000);
+    if (!unreadIds.length || markingRead.current || sendingRef.current) return;
+    markingRead.current = true;
+    void markNotificationsReadAction(unreadIds).finally(() => { markingRead.current = false; });
+  }, [dataset.events, dataset.readEventIds, offerId, currentRole, markNotificationsReadAction]);
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

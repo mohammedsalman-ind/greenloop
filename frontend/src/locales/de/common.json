@@ -184,6 +184,7 @@
       "tools": "Werkzeuge"
     },
     "items": {
+      "negotiationChat": "Verhandlungschat",
       "explore": "Startseite",
       "dashboard": "Dashboard",
       "projects": "Projekte",
@@ -309,5 +310,13 @@
     "closed": "Diese Unterhaltung ist geschlossen. Frühere Nachrichten bleiben lesbar.",
     "accept": "Angebot annehmen",
     "accepted": "Angebot angenommen."
+  },
+  "negotiationInbox": {
+    "subtitle": "Nachrichten und Verhandlungen mit deinen Anbietern oder Empfängern.",
+    "empty": "Noch keine Unterhaltungen. Chats erscheinen hier, wenn ein Angebot für eine Anfrage gesendet wird.",
+    "viewOffers": "Angebote ansehen",
+    "unread": "{{count}} ungelesen",
+    "openConversation": "Chat öffnen und verhandeln",
+    "back": "Zurück zu den Chats"
   }
 }
