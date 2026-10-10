@@ -4,12 +4,13 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve, dirname, basename } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
-import { createBackend } from '../src/app.mjs';
+import { createBackend, expirePostgresSlots } from './databaseHarness.mjs';
+import { createMockPaymentProvider } from '../src/services/payment-provider.mock.mjs';
 import { recoveryFlowTotals, receiverCapacityTotals } from '../../shared/domain/metrics.ts';
 
 test('audit: endpoint contracts, malformed inputs, stale offers and rescheduling', async () => {
   const directory = mkdtempSync(join(tmpdir(), 'greenloop-audit-'));
-  const server = createBackend({ dataDir: directory });
+  const server = createBackend({ dataDir: directory, paymentProvider: createMockPaymentProvider({ delayMs: 5 }) });
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   const base = `http://127.0.0.1:${server.address().port}`;
   const client = () => {
@@ -38,7 +39,7 @@ test('audit: endpoint contracts, malformed inputs, stale offers and rescheduling
     const facility = (await receiver('/api/profile', 'PATCH', { workspaces: ['receiver'], activeWorkspace: 'receiver', organization: 'Audit yard' })).user.receiverId;
     await provider('/api/profile', 'PATCH', { activeWorkspace: 'receiver' }, 403);
     const project = (await act(provider, 'addProjectAction', [{ name: 'Audit demolition', location: 'Delhi', status: 'demolition' }])).result;
-    const input = { projectId: project.id, type: 'concrete', quantityT: 20, quantityRangeT: [20, 20], condition: 'good', grade: 'A', confidence: 1, evidence: [] };
+    const input = { projectId: project.id, type: 'concrete', quantityT: 20, quantityRangeT: [20, 20], condition: 'good', grade: 'A', confidence: 1, evidence: [], pricePerT: 1000 };
     const material = (await act(provider, 'addMaterialAction', [input])).result;
     await act(provider, 'addMaterialAction', [{ ...input, evidence: [null] }], 400);
     await act(provider, 'addMaterialAction', [{ ...input, projectId: {} }], 400);
@@ -68,6 +69,9 @@ test('audit: endpoint contracts, malformed inputs, stale offers and rescheduling
     await act(receiver, 'updateCapacityAction', [target.id, 5]);
     await act(receiver, 'rescheduleRequestAction', [held.id, target.id]);
     await act(receiver, 'acceptRequestAction', [held.id]);
+    await act(receiver, 'createPaymentAttemptAction', [{ bookingId: held.id }]);
+    for (let attempt = 0; attempt < 40 && (await receiver('/api/dataset')).dataset.payments?.find(item => item.bookingId === held.id)?.paymentStatus !== 'paid'; attempt++) await new Promise(resolve => setTimeout(resolve, 10));
+    assert.equal((await receiver('/api/dataset')).dataset.payments.find(item => item.bookingId === held.id).paymentStatus, 'paid');
     await act(provider, 'dispatchAction', [{ bookingId: held.id }]);
     await act(receiver, 'verifyAction', [{ bookingId: held.id, actualT: 2, acceptedT: 1, evidence: [] }], 400);
     await act(receiver, 'verifyAction', [{ bookingId: held.id, actualT: 2, acceptedT: 1, rejectReason: 'Contamination', evidence: [] }]);
@@ -85,6 +89,9 @@ test('audit: endpoint contracts, malformed inputs, stale offers and rescheduling
     await act(provider, 'addOfferAction', [{ passportId: material.id, demandId: demand.id, offeredQuantityT: 1 }]);
     offer = (await provider('/api/dataset')).dataset.offers[0];
     // Simulate capacity and a pending offer surviving until after their dates.
+    if (process.env.GREENLOOP_TEST_POSTGRES === 'embedded') {
+      await expirePostgresSlots(directory);
+    } else {
     const db = new DatabaseSync(join(directory, 'greenloop.sqlite'));
     try {
       const state = JSON.parse(db.prepare('SELECT document FROM state').get().document);
@@ -116,6 +123,7 @@ test('audit: endpoint contracts, malformed inputs, stale offers and rescheduling
       const events = JSON.parse(saved.prepare('SELECT document FROM state').get().document).events;
       assert.equal(new Set(events.map(event => event.id)).size, events.length);
     } finally { saved.close(); }
+    }
     await act(receiver, 'acceptOfferAction', [offer.id], 409);
     assert.equal((await provider('/api/dataset')).dataset.offers[0].status, 'pending');
     const noHeader = await fetch(`${base}/api/auth/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
