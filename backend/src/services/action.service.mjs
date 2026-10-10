@@ -81,7 +81,7 @@ export function createActionService({ datasetModel, datasetService, userModel, u
         const negotiationContext = offerId => {
           const item = dataset.offers.find(candidate => candidate.id === text(offerId, 'offer ID', 250));
           requireThat(item, 'Offer not found.', 404);
-          auctionService?.assertOfferDeadline(item.id);
+          if (action !== 'sendNegotiationMessageAction' || item.status !== 'accepted') auctionService?.assertOfferDeadline(item.id);
           const demand = dataset.demands.find(candidate => candidate.id === item.demandId);
           const material = dataset.materials.find(candidate => candidate.id === item.passportId);
           requireThat(demand && material, 'The offer is no longer available.', 409);
@@ -239,7 +239,7 @@ export function createActionService({ datasetModel, datasetService, userModel, u
           }
           case 'sendNegotiationMessageAction': {
             const { offer, demand, material, participantRole } = negotiationContext(args[0]);
-            requireThat(offer.status === 'pending', 'This negotiation is closed.', 409);
+            requireThat(['pending', 'accepted'].includes(offer.status) && !offer.archivedAt && demand.status !== 'CANCELLED', 'This conversation is closed.', 409);
             const body = text(args[1], 'message', 4000);
             const at = new Date().toISOString();
             const senderName = user.name || user.organization || user.email;

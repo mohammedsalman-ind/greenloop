@@ -41,6 +41,7 @@ export default function AwaitingScheduleCard({ offer, receiverWorkspace }: { off
         <p className="mt-1 text-sm font-semibold text-loop-700 dark:text-loop-300">{t("acceptedOrders.awaitingSchedule")}</p>
         <p className="mt-1 text-sm text-steel-600 dark:text-steel-400">{t(receiverWorkspace ? "acceptedOrders.receiverHint" : "acceptedOrders.providerHint")}</p>
         <p className="mt-2 text-xs text-steel-500 dark:text-steel-400">{offer.id} · {offer.passportId}{price !== undefined ? ` · ${formatINRPerT(price)}` : ""}</p>
+        <Link to={`/app/negotiations/${offer.id}`} className="mt-3 inline-flex min-h-10 items-center rounded-lg border border-steel-200 px-3 text-sm font-semibold text-loop-700 hover:bg-loop-50 dark:border-steel-700 dark:text-loop-300 dark:hover:bg-loop-900/20">{t("negotiationChat.open")}</Link>
         {receiverWorkspace && <div className="mt-3 flex flex-wrap items-end gap-2">
           {slots.length > 0 && <>
             <label className="min-w-0 flex-1 text-xs font-medium text-steel-700 dark:text-steel-300" htmlFor={`slot-${offer.id}`}>

@@ -301,5 +301,13 @@
     "create": "Crear proyecto",
     "creating": "Creando proyecto…"
   },
-  "acceptedOrders": {"awaitingSchedule":"Pendiente de programación","receiverHint":"Oferta aceptada. Selecciona capacidad de recepción para confirmar la reserva.","providerHint":"Oferta aceptada. El receptor está organizando una fecha de recepción.","chooseSlot":"Fecha de recepción","schedule":"Confirmar reserva","receivingPlan":"Planificar recepción","failed":"No se pudo confirmar la reserva. Comprueba la capacidad actual e inténtalo de nuevo."}
+  "acceptedOrders": {"awaitingSchedule":"Pendiente de programación","receiverHint":"Oferta aceptada. Selecciona capacidad de recepción para confirmar la reserva.","providerHint":"Oferta aceptada. El receptor está organizando una fecha de recepción.","chooseSlot":"Fecha de recepción","schedule":"Confirmar reserva","receivingPlan":"Planificar recepción","failed":"No se pudo confirmar la reserva. Comprueba la capacidad actual e inténtalo de nuevo."},
+  "negotiationChat": {
+    "open": "Chat de negociación",
+    "sending": "Enviando…",
+    "failed": "No se pudo enviar el mensaje. Tu borrador sigue aquí; inténtalo de nuevo.",
+    "closed": "Esta conversación está cerrada. Puedes leer los mensajes anteriores.",
+    "accept": "Aceptar oferta",
+    "accepted": "Oferta aceptada."
+  }
 }

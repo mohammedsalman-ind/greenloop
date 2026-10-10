@@ -301,5 +301,13 @@
     "create": "Projekt erstellen",
     "creating": "Projekt wird erstellt…"
   },
-  "acceptedOrders": {"awaitingSchedule":"Termin ausstehend","receiverHint":"Angebot angenommen. Wähle eine Annahmekapazität, um die Buchung zu bestätigen.","providerHint":"Angebot angenommen. Der Empfänger plant einen Annahmetermin.","chooseSlot":"Annahmetermin","schedule":"Buchung bestätigen","receivingPlan":"Annahme planen","failed":"Die Buchung konnte nicht bestätigt werden. Prüfe die aktuelle Kapazität und versuche es erneut."}
+  "acceptedOrders": {"awaitingSchedule":"Termin ausstehend","receiverHint":"Angebot angenommen. Wähle eine Annahmekapazität, um die Buchung zu bestätigen.","providerHint":"Angebot angenommen. Der Empfänger plant einen Annahmetermin.","chooseSlot":"Annahmetermin","schedule":"Buchung bestätigen","receivingPlan":"Annahme planen","failed":"Die Buchung konnte nicht bestätigt werden. Prüfe die aktuelle Kapazität und versuche es erneut."},
+  "negotiationChat": {
+    "open": "Verhandlungschat",
+    "sending": "Wird gesendet…",
+    "failed": "Die Nachricht konnte nicht gesendet werden. Dein Entwurf bleibt hier; versuche es erneut.",
+    "closed": "Diese Unterhaltung ist geschlossen. Frühere Nachrichten bleiben lesbar.",
+    "accept": "Angebot annehmen",
+    "accepted": "Angebot angenommen."
+  }
 }

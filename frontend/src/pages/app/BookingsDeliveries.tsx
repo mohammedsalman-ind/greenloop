@@ -331,7 +331,7 @@ function OrderDetailsPanel({ facts, activeWorkspace, onClose }: { facts: Booking
   const media = materialMediaFor(material?.type ?? "unknown");
 
   // Order summary data for the existing PDF action.
-  const offer = dataset.offers?.find((item) => item.demandId === booking.demandId && item.passportId === booking.materialId);
+  const offer = dataset.offers?.find((item) => booking.offerId ? item.id === booking.offerId : item.demandId === booking.demandId && item.passportId === booking.materialId);
   const unitPrice = booking.agreedPricePerT ?? offer?.agreedPricePerT ?? offer?.pricePerT ?? material?.pricePerT;
   const transactionContact = dataset.transactionContacts?.find(
     (contact) => contact.materialId === booking.materialId && contact.receiverId === booking.receiverId,
@@ -435,7 +435,7 @@ function OrderCard({
   const providerListing = dataset.providerListings?.find((listing) => listing.materialId === booking.materialId);
   const media = materialMediaFor(material?.type ?? "unknown");
   const receiverWorkspace = activeWorkspace === "receiver";
-  const offer = dataset.offers?.find((item) => item.demandId === booking.demandId && item.passportId === booking.materialId);
+  const offer = dataset.offers?.find((item) => booking.offerId ? item.id === booking.offerId : item.demandId === booking.demandId && item.passportId === booking.materialId);
   const unitPrice = booking.agreedPricePerT ?? offer?.agreedPricePerT ?? offer?.pricePerT ?? material?.pricePerT;
   const project = dataset.projects.find(p => p.id === material?.projectId);
   const isFinalized = verification?.status === "verified" || verification?.status === "rejected";
@@ -490,6 +490,7 @@ function OrderCard({
           </p>
         </div>
         <div className="flex flex-col items-end gap-1.5">
+          {offer && <Link to={`/app/negotiations/${offer.id}`} className="inline-flex min-h-9 items-center rounded-xl border border-steel-200 px-3 text-sm font-semibold text-loop-700 hover:bg-loop-50 dark:border-steel-700 dark:text-loop-300 dark:hover:bg-loop-900/20">{t("negotiationChat.open")}</Link>}
           <button
             type="button"
             aria-expanded={expanded}

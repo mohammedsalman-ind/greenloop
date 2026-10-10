@@ -552,7 +552,7 @@ export default function Demand() {
                                   ) : <p className="text-sm text-steel-500">Match analysis unavailable.</p>}
                                 </div>
                               </details>
-                              <div className="mt-1 basis-full"><Link className="text-sm font-semibold text-loop-800 underline dark:text-loop-300" to={`/app/negotiations/${offer.id}`}>{t("negotiationOpen")}</Link></div>
+                              <div className="mt-1 basis-full"><Link className="text-sm font-semibold text-loop-800 underline dark:text-loop-300" to={`/app/negotiations/${offer.id}`}>{t("negotiationChat.open")}</Link></div>
                             </div>
                           );
                         })}

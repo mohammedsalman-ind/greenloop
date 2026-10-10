@@ -530,7 +530,8 @@ export default function Providers() {
                             {matchCandidate ? `${Math.round(matchCandidate.score * 100)}% Match` : "N/A"}
                           </p>
                         </div>
-                        <div className="flex items-center justify-end">
+                        <div className="flex flex-wrap items-center justify-end gap-3">
+                          {["pending", "accepted"].includes(offer.status) && <Link to={`/app/negotiations/${offer.id}`} className="text-sm font-semibold text-loop-700 hover:underline dark:text-loop-300">{t("negotiationChat.open")}</Link>}
                           {demand && <Link to={`/app/receiver/demand?demand=${encodeURIComponent(demand.id)}${offer.status === "pending" ? `&offer=${encodeURIComponent(offer.id)}` : ""}`} className="text-sm font-semibold text-[#416d4b] hover:underline dark:text-[#b8d0bd]">{offer.status === "pending" ? "Respond" : "View request"}</Link>}
                         </div>
                       </div>

@@ -358,5 +358,13 @@
     "create": "Create project",
     "creating": "Creating project…"
   },
-  "acceptedOrders": {"awaitingSchedule":"Awaiting schedule","receiverHint":"Offer accepted. Choose receiving capacity to confirm the booking.","providerHint":"Offer accepted. The receiver is arranging a receiving slot.","chooseSlot":"Receiving slot","schedule":"Confirm booking","receivingPlan":"Set receiving plan","failed":"Could not confirm the booking. Check current capacity and try again."}
+  "acceptedOrders": {"awaitingSchedule":"Awaiting schedule","receiverHint":"Offer accepted. Choose receiving capacity to confirm the booking.","providerHint":"Offer accepted. The receiver is arranging a receiving slot.","chooseSlot":"Receiving slot","schedule":"Confirm booking","receivingPlan":"Set receiving plan","failed":"Could not confirm the booking. Check current capacity and try again."},
+  "negotiationChat": {
+    "open": "Negotiation chat",
+    "sending": "Sending…",
+    "failed": "Message could not be sent. Your draft is saved here; try again.",
+    "closed": "This conversation is closed. You can still read previous messages.",
+    "accept": "Accept offer",
+    "accepted": "Offer accepted."
+  }
 }

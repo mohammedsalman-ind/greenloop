@@ -1,3 +1,4 @@
+import NegotiationChat from "@/components/greenloop/NegotiationChat";
 import PageMeta from "@/components/common/PageMeta";
 import { useAuth } from "@/context/AuthContext.helpers";
 import { slotMatchesDemandPeriod } from "@shared/domain/capacity";
@@ -11,7 +12,7 @@ export default function NegotiationPage() {
   const { t } = useTranslation();
   const { offerId = "" } = useParams();
   const { user } = useAuth();
-  const { dataset, sendNegotiationMessageAction, proposeFinalTermsAction, approveFinalTermsAction, acceptOfferAction } = useGreenLoopStore();
+  const { dataset, proposeFinalTermsAction, approveFinalTermsAction, acceptOfferAction } = useGreenLoopStore();
   const offer = dataset.offers?.find(item => item.id === offerId);
   const demand = dataset.demands.find(item => item.id === offer?.demandId);
   const material = dataset.materials.find(item => item.id === offer?.passportId);
@@ -19,7 +20,6 @@ export default function NegotiationPage() {
   const proposal = conversation?.proposals.at(-1);
   const slot = dataset.slots.find(item => item.id === proposal?.slotId);
   const isProvider = user?.activeWorkspace === "provider";
-  const [message, setMessage] = useState("");
   const [notice, setNotice] = useState("");
   const compatibleSlots = useMemo(() => dataset.slots.filter(item => item.receiverId === demand?.receiverId && item.materialType === material?.type && item.date >= new Date().toISOString().slice(0, 10) && demand && slotMatchesDemandPeriod(item, demand.period)).sort((a, b) => a.date.localeCompare(b.date)), [dataset.slots, demand, material]);
 
@@ -28,12 +28,6 @@ export default function NegotiationPage() {
   const canPropose = offer.status === "pending" && (isProvider || user?.activeWorkspace === "receiver");
   const approvedByMe = isProvider ? Boolean(proposal?.providerApprovedAt) : Boolean(proposal?.receiverApprovedAt);
   const awaitingMe = proposal?.status === (isProvider ? "awaiting_provider_approval" : "awaiting_receiver_approval");
-  const submitMessage = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!message.trim()) return;
-    const ok = await sendNegotiationMessageAction(offerId, message.trim());
-    if (ok) setMessage("");
-  };
   const submitProposal = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
@@ -62,15 +56,9 @@ export default function NegotiationPage() {
 
     <p className="mt-5 border-s-4 border-loop-600 bg-loop-50 px-4 py-3 text-sm text-loop-900 dark:bg-loop-900/20 dark:text-loop-100">{t("negotiation.chatNotice")}</p>
     {notice && <p role="status" className="mt-3 rounded-md bg-steel-100 px-4 py-3 text-sm dark:bg-white/10">{notice}</p>}
-    {!isProvider && offer.status === "pending" && <button type="button" onClick={async () => { if (await acceptOfferAction(offerId)) setNotice("Offer accepted."); }} className="mt-4 rounded-md bg-loop-800 px-5 py-3 text-sm font-bold text-white hover:bg-loop-700">Accept offer</button>}
+    {!isProvider && offer.status === "pending" && <button type="button" onClick={async () => { if (await acceptOfferAction(offerId)) setNotice(t("negotiationChat.accepted")); }} className="mt-4 rounded-md bg-loop-800 px-5 py-3 text-sm font-bold text-white hover:bg-loop-700">{t("negotiationChat.accept")}</button>}
 
-    <section className="mt-6 rounded-lg border border-steel-200 bg-white p-5 dark:border-steel-800 dark:bg-gray-dark" aria-labelledby="chat-title">
-      <h2 id="chat-title" className="font-archivo text-xl font-bold text-ink-900 dark:text-white">{t("negotiation.chat")}</h2>
-      <div className="mt-4 flex max-h-80 min-h-32 flex-col gap-3 overflow-y-auto rounded-md bg-gray-50 p-4 dark:bg-gray-900">
-        {conversation.messages.length === 0 ? <p className="m-auto text-sm text-steel-500">{t("negotiation.noMessages")}</p> : conversation.messages.map(item => <article key={item.id} className={`max-w-[85%] rounded-lg border border-steel-200 bg-white px-3 py-2 dark:border-steel-700 dark:bg-gray-dark ${item.senderRole === (isProvider ? "provider" : "receiver") ? "self-end" : "self-start"}`}><p className="text-xs font-semibold text-steel-600 dark:text-gray-300">{item.senderName} · {formatDate(item.createdAt)}</p><p className="mt-1 whitespace-pre-wrap text-sm text-ink-900 dark:text-white">{item.body}</p></article>)}
-      </div>
-      {offer.status === "pending" && <form onSubmit={submitMessage} className="mt-3 flex gap-2"><label className="sr-only" htmlFor="negotiation-message">{t("negotiation.messagePlaceholder")}</label><input id="negotiation-message" value={message} onChange={event => setMessage(event.target.value)} maxLength={4000} placeholder={t("negotiation.messagePlaceholder")} className="min-w-0 flex-1 rounded-md border border-steel-300 bg-white px-3 py-2 text-sm dark:border-steel-700 dark:bg-gray-900"/><button className="rounded-md bg-ink-900 px-4 py-2 text-sm font-semibold text-white dark:bg-white dark:text-ink-900">{t("negotiation.send")}</button></form>}
-    </section>
+    <NegotiationChat key={offer.id} offerId={offer.id} messages={conversation.messages} currentRole={isProvider ? "provider" : "receiver"} canChat={["pending", "accepted"].includes(offer.status) && !offer.archivedAt && demand.status !== "CANCELLED"} />
 
     <section className="mt-6 rounded-lg border border-steel-200 bg-white p-5 dark:border-steel-800 dark:bg-gray-dark" aria-labelledby="terms-title">
       <div className="flex flex-wrap items-center justify-between gap-2"><div><h2 id="terms-title" className="font-archivo text-xl font-bold text-ink-900 dark:text-white">{t("negotiation.finalTerms")}</h2><p className="mt-1 text-sm text-steel-600 dark:text-gray-300">{proposal ? `${t("negotiation.version")} ${proposal.version} · ${t(`negotiation.status.${proposal.status}`)}` : t("negotiation.noTerms")}</p></div>{proposal && <span className="text-xs text-steel-500">{t("negotiation.proposedBy", { role: t(`negotiation.roles.${proposal.proposedBy}`) })}</span>}</div>
