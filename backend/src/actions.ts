@@ -544,23 +544,19 @@ export function createActions(initial: GreenLoopDataset, actor: Actor) {
       if (!offer || offer.status !== "pending") return prev;
       const demand = prev.demands.find((item) => item.id === offer.demandId);
       const material = prev.materials.find((item) => item.id === offer.passportId);
-      if (!demand || !material || material.type !== demand.materialType || demand.status === "PAUSED" || demand.status === "CANCELLED") return prev;
+      if (!demand || !material) return prev;
       const eligibleSlots = prev.slots
-        .filter((item) => item.receiverId === demand.receiverId && item.materialType === demand.materialType && item.date >= new Date().toISOString().slice(0, 10) && slotMatchesDemandPeriod(item, demand.period))
+        .filter((item) => item.receiverId === demand.receiverId && item.materialType === material.type)
         .sort((a, b) => a.date.localeCompare(b.date));
-      if (!eligibleSlots.length) return prev;
 
       const at = new Date().toISOString();
-      const committedMaterialT = prev.bookings.filter((booking) => booking.materialId === material.id && booking.status !== "cancelled")
-        .reduce((total, booking) => total + booking.tonnesT, 0);
-      const committedDemandT = prev.bookings.filter((booking) => booking.demandId === demand.id && booking.status !== "cancelled")
-        .reduce((total, booking) => total + booking.tonnesT, 0);
-      const materialAvailableT = Math.max(0, material.quantityT - committedMaterialT);
-      const demandRemainingT = Math.max(0, demand.requiredT - committedDemandT);
       const requested = offer.offeredQuantityT;
-      if (requested > materialAvailableT || requested > demandRemainingT) return prev;
-      const slot = eligibleSlots.find((item) => availableT(item, prev.bookings) >= requested);
-      if (!slot) return prev;
+      const slot = eligibleSlots[0];
+      const agreedPricePerT = offer.counters?.at(-1)?.pricePerT ?? offer.pricePerT;
+      if (!slot) {
+        const event = eventFor(prev, "offer.accepted", ACTOR_RECEIVER, `Provider offer accepted — ${requested.toFixed(1)} t ${material.type}; receiving slot not assigned`, [offer.id, demand.id, material.id], undefined, at);
+        return { ...prev, offers: offers.map((item) => item.id === offerId ? { ...item, status: "accepted", ...(agreedPricePerT !== undefined ? { agreedPricePerT } : {}) } : item), events: [...prev.events, event] };
+      }
       const capacityResult = requestCapacity(prev, {
         materialId: material.id,
         receiverId: demand.receiverId,
@@ -570,8 +566,7 @@ export function createActions(initial: GreenLoopDataset, actor: Actor) {
         at,
       });
       const createdBooking = capacityResult.output.booking;
-      const agreedPricePerT = offer.counters?.at(-1)?.pricePerT ?? offer.pricePerT;
-      const acceptedBooking: Booking = { ...createdBooking, demandId: demand.id, receiverAcceptedAt: at, ...(agreedPricePerT !== undefined ? { agreedPricePerT } : {}) };
+      const acceptedBooking: Booking = { ...createdBooking, demandId: demand.id, ...(capacityResult.output.outcome === "confirmed" ? { receiverAcceptedAt: at } : {}), ...(agreedPricePerT !== undefined ? { agreedPricePerT } : {}) };
       const attachedDataset: GreenLoopDataset = {
         ...capacityResult.dataset,
         bookings: capacityResult.dataset.bookings.map((item) => item.id === createdBooking.id ? acceptedBooking : item),
@@ -588,6 +583,7 @@ export function createActions(initial: GreenLoopDataset, actor: Actor) {
       next = updateDemandCoverage(next, demand.id);
       return next;
     });
+    return true;
   };
 
   const counterOfferAction = (offerId: string, actor: "provider" | "receiver", pricePerT: number) => {

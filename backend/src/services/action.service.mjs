@@ -210,7 +210,13 @@ export function createActionService({ datasetModel, datasetService, userModel, u
             requireThat(item && item.status === 'draft', 'Only a saved draft offer can be deleted.', 409); own(item.passportId, user);
             result = engine.deleteOfferDraftAction(offerId); requireThat(result, 'This draft offer no longer exists.', 409); break;
           }
-          case 'acceptOfferAction': throw new ApiError(409, 'Offers can only become bookings after both parties approve Final Terms.');
+          case 'acceptOfferAction': {
+            const item = offer(args[0]);
+            result = engine.acceptOfferAction(item.id);
+            nextOverride = engine.getDataset();
+            requireThat(result, 'This offer could not be accepted.', 409);
+            break;
+          }
           case 'declineOfferAction': { const item=offer(args[0]); requireThat(!item.auctionId,'Auction awards cannot be declined through the offer action.',409); result = engine.declineOfferAction(args[0]); break; }
           case 'counterOfferAction': {
             throw new ApiError(409, 'Use Final Terms to propose a price, quantity, and receiving slot together.');

@@ -39,6 +39,7 @@ export interface GreenLoopStoreValue {
   addOfferAction: (offer: Omit<MaterialOffer, "id" | "status" | "createdAt">) => Promise<boolean>;
   saveOfferDraftAction: (offer: Omit<MaterialOffer, "id" | "status" | "createdAt">) => Promise<boolean>;
   deleteOfferDraftAction: (offerId: string) => Promise<boolean>;
+  acceptOfferAction: (offerId: string) => Promise<boolean>;
   declineOfferAction: (offerId: string) => Promise<boolean>;
   sendNegotiationMessageAction: (offerId: string, body: string) => Promise<boolean>;
   proposeFinalTermsAction: (offerId: string, terms: Pick<FinalTermsProposal, "quantityT" | "pricePerT" | "destination" | "slotId">) => Promise<boolean>;
