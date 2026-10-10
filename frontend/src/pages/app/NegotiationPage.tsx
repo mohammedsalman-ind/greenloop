@@ -11,7 +11,7 @@ export default function NegotiationPage() {
   const { t } = useTranslation();
   const { offerId = "" } = useParams();
   const { user } = useAuth();
-  const { dataset, sendNegotiationMessageAction, proposeFinalTermsAction, approveFinalTermsAction } = useGreenLoopStore();
+  const { dataset, sendNegotiationMessageAction, proposeFinalTermsAction, approveFinalTermsAction, acceptOfferAction } = useGreenLoopStore();
   const offer = dataset.offers?.find(item => item.id === offerId);
   const demand = dataset.demands.find(item => item.id === offer?.demandId);
   const material = dataset.materials.find(item => item.id === offer?.passportId);
@@ -62,6 +62,7 @@ export default function NegotiationPage() {
 
     <p className="mt-5 border-s-4 border-loop-600 bg-loop-50 px-4 py-3 text-sm text-loop-900 dark:bg-loop-900/20 dark:text-loop-100">{t("negotiation.chatNotice")}</p>
     {notice && <p role="status" className="mt-3 rounded-md bg-steel-100 px-4 py-3 text-sm dark:bg-white/10">{notice}</p>}
+    {!isProvider && offer.status === "pending" && <button type="button" onClick={async () => { if (await acceptOfferAction(offerId)) setNotice("Offer accepted."); }} className="mt-4 rounded-md bg-loop-800 px-5 py-3 text-sm font-bold text-white hover:bg-loop-700">Accept offer</button>}
 
     <section className="mt-6 rounded-lg border border-steel-200 bg-white p-5 dark:border-steel-800 dark:bg-gray-dark" aria-labelledby="chat-title">
       <h2 id="chat-title" className="font-archivo text-xl font-bold text-ink-900 dark:text-white">{t("negotiation.chat")}</h2>

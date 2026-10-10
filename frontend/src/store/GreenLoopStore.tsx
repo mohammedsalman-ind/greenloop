@@ -73,6 +73,7 @@ export function GreenLoopStoreProvider({ children }: { children: ReactNode }) {
     addOfferAction: input => run("addOfferAction", [input], false),
     saveOfferDraftAction: input => run("saveOfferDraftAction", [input], false),
     deleteOfferDraftAction: id => run("deleteOfferDraftAction", [id], false),
+    acceptOfferAction: id => run("acceptOfferAction", [id], false),
     declineOfferAction: id => run("declineOfferAction", [id], false),
     sendNegotiationMessageAction: (id, body) => run("sendNegotiationMessageAction", [id, body], false),
     proposeFinalTermsAction: (id, terms) => run("proposeFinalTermsAction", [id, terms], false),
